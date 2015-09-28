@@ -365,7 +365,7 @@ public class OpenCtl {
 						DuoShuo duoShuo = new DuoShuo();
 						duoShuo.setPostId(Long.parseLong(meta.getString("post_id")));
 						duoShuo.setThreadId(Long.parseLong(meta.getString("thread_id")));
-						duoShuo.setTheme(themeService.find(meta.getString("thread_key")));
+						duoShuo.setTheme(themeService.find(meta.getString("thread_key"), false));
 						duoShuo.setAuthorId(meta.getInt("author_id"));
 						duoShuo.setAuthorNmae(meta.getString("author_name"));
 						duoShuo.setAuthorEmail(meta.getString("author_email"));

@@ -1,4 +1,4 @@
-package fate.webapp.template.service;
+package fate.webapp.blog.service;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

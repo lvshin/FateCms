@@ -64,7 +64,7 @@ public class ThemeRedisDao {
 	public void redisThemeUpdate(Theme theme){
 		redisTemplate.execute(new RedisCallback<Boolean>() {  
             public Boolean doInRedis(RedisConnection connection)  
-                    throws DataAccessException {  
+                    throws DataAccessException {
                 RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
                 byte[] key  = serializer.serialize("theme."+theme.getGuid());
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(); 

@@ -178,6 +178,9 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
         Param txAppKey = paramService.findByKey(Constants.TX_APP_KEY);
         if(txAppKey==null)
             txAppKey = new Param();
+        Param redisOpen = paramService.findByKey(Constants.REDIS_OPEN);
+        if(redisOpen==null)
+            redisOpen = new Param();
         
 		GlobalSetting globalSetting = GlobalSetting.getInstance();
 		globalSetting.setSiteName(siteName.getTextValue());
@@ -200,6 +203,7 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 		globalSetting.setDuoshuoKey(duoshuoKey.getTextValue());
 		globalSetting.setDuoshuoSecret(duoshuoSecret.getTextValue());
 		globalSetting.setTxAppKey(txAppKey.getTextValue());
+		globalSetting.setRedisOpen(redisOpen.getIntValue()==1);
 		
 		//邮件服务
 		JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();

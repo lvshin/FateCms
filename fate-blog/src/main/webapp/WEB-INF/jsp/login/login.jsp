@@ -119,12 +119,11 @@
 				</div>
 			</div>
 		</div>
-		
-		<script type="text/javascript" src="js/Validform/Validform_v5.3.2.js"></script>
-		<script type="text/javascript"
-			src="js/Validform/passwordStrength-min.js"></script>
 	</div>
 	<c:import url="/op/footer"></c:import>
+	<script type="text/javascript" src="js/Validform/Validform_v5.3.2.js"></script>
+		<script type="text/javascript"
+			src="js/Validform/passwordStrength-min.js"></script>
 </body>
 <script type="text/javascript">
 	

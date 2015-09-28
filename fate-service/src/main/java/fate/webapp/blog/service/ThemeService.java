@@ -6,15 +6,15 @@ import fate.webapp.blog.model.Theme;
 
 public interface ThemeService {
 
-	public Theme find(String guid);
+	public Theme find(String guid, boolean redisOpen);
 
 	public void save(Theme theme);
 
-	public void crush(Theme theme);
+	public void crush(Theme theme, boolean redisOpen);
 	
-	public void crush(String guid);
+	public void crush(String guid, boolean redisOpen);
 
-	public Theme update(Theme theme);
+	public Theme update(Theme theme, boolean redisOpen);
 	
 	
 	/**
@@ -53,7 +53,7 @@ public interface ThemeService {
 	 */
 	public long statistics(int fid,int datetype,String day);
 	
-	public Theme findByDateAndTitle(String date, String title);
+	public Theme findByDateAndTitle(String date, String title, boolean redisOpen);
 	
 	public List<Theme> pageByFid(int fid, int per, int curPage, boolean isDelete ,boolean timeOrder, boolean priority, int state);
 	

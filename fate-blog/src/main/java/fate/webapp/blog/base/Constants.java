@@ -135,6 +135,8 @@ public class Constants {
     
     public static final String LOG_ID = "log_id";
     
+    public static final String REDIS_OPEN = "redis_open";
+    
     /**
      * 谷歌ping地址
      */

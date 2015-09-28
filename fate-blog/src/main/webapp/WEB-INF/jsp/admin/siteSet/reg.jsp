@@ -55,7 +55,7 @@
 								</div>
 							</div>
 							<div class="col-md-6">
-								<label class="help-block">是否允许用户注册</label>
+								<label class="help-block">是否允许用户注册,目前只有管理员需要登录，其他用户登录后不能做任何操作，不建议开启</label>
 							</div>
 						</div>
 						<div class="reg" ${setting.regAllow?"style='display:block;'":""}>

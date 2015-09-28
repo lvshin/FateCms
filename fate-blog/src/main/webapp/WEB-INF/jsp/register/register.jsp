@@ -73,17 +73,18 @@
 						<span class="Validform_checktip help"></span>
 					</div>
 				</div>
+				<jsp:useBean id="geetestSdk" class="fate.webapp.blog.api.open.GeetestLib" scope="request" />
+				<%
+					GlobalSetting globalSetting = GlobalSetting.getInstance();
+					String captcha_id = globalSetting.getGeetestId();//It's a capthca whihc needs to be register
+					if(captcha_id!=null){
+						geetestSdk.setCaptchaId(captcha_id);
+				%>
 				<div class="form-group">
 						<label for="" class="col-sm-3 control-label">
 							<span class="neccess">*</span>滑动验证码：
 						</label>
 						<div class="col-md-5">
-							<jsp:useBean id="geetestSdk" class="fate.webapp.blog.api.open.GeetestLib" scope="request" />
-							<%
-								GlobalSetting globalSetting = GlobalSetting.getInstance();
-								String captcha_id = globalSetting.getGeetestId();//It's a capthca whihc needs to be register
-								geetestSdk.setCaptchaId(captcha_id);
-							%>
 							<%
 								if (geetestSdk.preProcess() != 1) {
 							%>
@@ -98,6 +99,7 @@
 							%>
 						</div>
 					</div>
+				<%} %>
 				<div class="form-group" id="mcode">
 					<label for="code" class="col-sm-3 control-label">
 						<span class="neccess">*</span>手机验证码：
@@ -329,7 +331,7 @@
 			},
 			success : function(data) {
 				var d = dialog({
-					content : data.message
+					content : data.msg
 				});
 				d.showModal();
 				if (data.success) {

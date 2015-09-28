@@ -52,8 +52,8 @@
 						<thead>
 							<tr>
 								<th style="min-width:80px;">显示顺序</th>
-								<th style="width:70%;">版块名称</th>
-								<th style="min-width:80px;">版块id</th>
+								<th style="width:70%;">版块名称（默认地址：op/forum-{fid}-1.html）</th>
+								<th style="min-width:80px;">版块fid</th>
 								<th style="min-width:150px;" align="right">操作&nbsp;</th>
 							</tr>
 						</thead>

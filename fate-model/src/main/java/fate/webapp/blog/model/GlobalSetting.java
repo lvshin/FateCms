@@ -89,6 +89,8 @@ public class GlobalSetting {
 	
 	private String txAppKey;//腾讯微博的appkey
 	
+	private boolean redisOpen;//是否开启redis
+	
 	private static final GlobalSetting globalSetting = new GlobalSetting();
 	
 	private GlobalSetting() {
@@ -271,6 +273,14 @@ public class GlobalSetting {
 
     public void setTxAppKey(String txAppKey) {
         this.txAppKey = txAppKey;
+    }
+
+    public boolean getRedisOpen() {
+        return redisOpen;
+    }
+
+    public void setRedisOpen(boolean redisOpen) {
+        this.redisOpen = redisOpen;
     }
 	
 }

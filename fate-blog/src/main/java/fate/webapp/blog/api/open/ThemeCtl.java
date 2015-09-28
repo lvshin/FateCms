@@ -22,6 +22,7 @@ import fate.webapp.blog.base.Constants;
 import fate.webapp.blog.model.Advertisement;
 import fate.webapp.blog.model.Comments;
 import fate.webapp.blog.model.Forum;
+import fate.webapp.blog.model.GlobalSetting;
 import fate.webapp.blog.model.Theme;
 import fate.webapp.blog.model.ThirdPartyAccess;
 import fate.webapp.blog.model.User;
@@ -147,7 +148,8 @@ public class ThemeCtl {
 	public ModelAndView detail(@PathVariable("year") String year, @PathVariable("month") String month,@PathVariable("date") String date, @PathVariable("title") String title, HttpServletRequest request, HttpServletResponse response){
 		String referer = request.getHeader("Referer");
 		String day = year+"-"+month+"-"+date;
-		Theme theme = themeService.findByDateAndTitle(day, title);
+		 GlobalSetting globalSetting = GlobalSetting.getInstance();
+		Theme theme = themeService.findByDateAndTitle(day, title, globalSetting.getRedisOpen());
 		if(theme==null){
 			try {
 				response.sendError(404);//发送404
@@ -173,7 +175,7 @@ public class ThemeCtl {
 		if(!isSpider(request)&&theme.getState()!=Theme.STATE_EDIT&&(userSession==null||(userSession!=null&&userSession.getUser().getUserType()==User.USER_TYPE_NORMAL)))
 			theme.setViews(theme.getViews()+1);
 		theme.setReplies(theme.getDuoShuos().size());
-		theme = themeService.update(theme);
+		theme = themeService.update(theme, globalSetting.getRedisOpen());
 //		theme.setTags(theme.getTag s().replace(",", "|"));
 		
 		Advertisement advertisement = advertisementService.findLastByType(Advertisement.TYPE_INSIDE);
@@ -181,7 +183,7 @@ public class ThemeCtl {
 //theme.setTitle("1234");		
 		
 		ThirdPartyAccess weibo = thirdPartyAccessService.findByType(ThirdPartyAccess.TYPE_XINLANG);
-        mv.addObject("weibo", weibo.getAccessKey());
+        mv.addObject("weibo", weibo==null?"":weibo.getAccessKey());
 		
 		mv.addObject("theme", theme);
 		mv.addObject("desc", FilterHTMLTag.delHTMLTag(theme.getContent()));
@@ -195,6 +197,7 @@ public class ThemeCtl {
 	public Object addComment(String commentContent,String themeGuid,String commentGuid,Integer toUid, HttpSession session){
 		Map<String, Object> map = new HashMap<String, Object>();
 		Comments comments = new Comments();
+		GlobalSetting globalSetting = GlobalSetting.getInstance();
 		try{
 			UserSession userSession = (UserSession) session.getAttribute("userSession");
 			if(!(userSession.getUser().getEmailStatus()||userSession.getUser().getMobileStatus())&&userSession.getType()==0){
@@ -203,7 +206,7 @@ public class ThemeCtl {
 				return map;
 			}
 			if(themeGuid!=null)
-				comments.setTheme(themeService.find(themeGuid));
+				comments.setTheme(themeService.find(themeGuid, globalSetting.getRedisOpen()));
 			else if(commentGuid!=null){
 				comments.setCommentParent(commentsService.find(commentGuid));
 				if(toUid!=0)
@@ -217,7 +220,7 @@ public class ThemeCtl {
 			comments.setCommentContent(commentContent);
 			comments.setUser(userSession.getUser());
 			commentsService.save(comments);
-			themeService.update(themeService.find(themeGuid));
+			themeService.update(themeService.find(themeGuid, globalSetting.getRedisOpen()), globalSetting.getRedisOpen());
 			map.put("success", true);
 			map.put("message", "评论成功");
 		}catch(Exception e){
@@ -233,9 +236,10 @@ public class ThemeCtl {
 	public ModelAndView addTheme(@RequestParam(defaultValue = "0")int fid,String tid,HttpSession session){
 		ModelAndView mv = new ModelAndView("theme/addTheme");
 		UserSession userSession = (UserSession) session.getAttribute("userSession");
+		 GlobalSetting globalSetting = GlobalSetting.getInstance();
 		Forum forum = null;
 		if(tid!=null){
-			Theme theme = themeService.find(tid);
+			Theme theme = themeService.find(tid, globalSetting.getRedisOpen());
 			if(theme!=null){
 				if(theme.getAuthorId()!=userSession.getUser().getUid()){
 					mv.addObject("success", false);
@@ -346,6 +350,7 @@ public class ThemeCtl {
 	@ResponseBody
 	public Object vote(int type,String guid, int voteType, HttpSession session){
 		Map<String, Object> map = new HashMap<String, Object>();
+		 GlobalSetting globalSetting = GlobalSetting.getInstance();
 		try{
 			if((type!=1&&type!=2)||(guid==null||guid.trim().equals(""))){
 				map.put("success", false);
@@ -359,7 +364,7 @@ public class ThemeCtl {
 				int down = 0;
 				/*投票*/
 				if(type==1){
-					Theme theme = themeService.find(guid);
+					Theme theme = themeService.find(guid, globalSetting.getRedisOpen());
 					voteRecord.setTheme(theme);
 					if(voteType==1)
 						theme.setUp(theme.getUp()+1);
@@ -367,7 +372,7 @@ public class ThemeCtl {
 						theme.setDown(theme.getDown()+1);
 					up = theme.getUp();
 					down = theme.getDown();
-					themeService.update(theme);
+					themeService.update(theme, globalSetting.getRedisOpen());
 				}
 				else if(type==2){
 					Comments comments = commentsService.find(guid);

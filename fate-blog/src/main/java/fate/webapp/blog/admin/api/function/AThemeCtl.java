@@ -137,7 +137,7 @@ public class AThemeCtl {
 				theme.setTitle(theme.getTitle().trim());
 				/* 从前台传的数据相当于新建了一个文章，会覆盖旧数据，所以得从数据库中取 */
 				if (theme.getGuid() != null && !theme.getGuid().equals("")) {
-					Theme a = themeService.find(theme.getGuid());
+					Theme a = themeService.find(theme.getGuid(), globalSetting.getRedisOpen());
 					a.setTitle(theme.getTitle());
 					a.setContent(theme.getContent());
 //					a.setThemeType(theme.getThemeType());
@@ -160,7 +160,7 @@ public class AThemeCtl {
 						"dd");
 				theme.setUrl("http://"+globalSetting.getAppUrl() + "/" + year + "/" + month + "/"
 						+ day + "/" + URLEncoder.encode(theme.getTitle(),"utf-8").replace("+", "%20") + ".html");
-			theme = themeService.update(theme);
+			theme = themeService.update(theme, globalSetting.getRedisOpen());
 			if(theme.getType()==Theme.TYPE_VIDEO&&files!=null)
 			for(String media:files){
 				Media m = mediaService.findByUrl(media);
@@ -221,6 +221,7 @@ public class AThemeCtl {
 //		for (Forum f : forums) {
 //			list.add(forumToJson(f));
 //		}
+		if(forums.size()>2)
 		list.add(forumToJson(forums.get(2)));
 		index.setList(list);
 		index.setHot(themeService.pageHot(5, 1, false, Theme.STATE_PUBLISH));
@@ -294,7 +295,7 @@ public class AThemeCtl {
 					"dd");
 			theme.setUrl("http://"+globalSetting.getAppUrl() + "/" + year + "/" + month + "/"
 					+ day + "/" + URLEncoder.encode(theme.getTitle(),"utf-8").replace("+", "%20") + ".html");
-			theme = themeService.update(theme);
+			theme = themeService.update(theme, globalSetting.getRedisOpen());
 			if(theme.getState()==Theme.STATE_PUBLISH){
 				//ping百度
 				boolean baidu = PingUtils.ping(Constants.BAIDU_PING, theme.getTitle(), "http://"+globalSetting.getAppUrl()+"/", theme.getUrl(), null);
@@ -315,7 +316,8 @@ public class AThemeCtl {
 	@RequestMapping("/toEditTheme")
 	public ModelAndView toEditTheme(String guid) {
 		ModelAndView mv = new ModelAndView("admin/function/theme/editTheme");
-		Theme theme = themeService.find(guid);
+		GlobalSetting globalSetting = GlobalSetting.getInstance();
+		Theme theme = themeService.find(guid, globalSetting.getRedisOpen());
 		mv.addObject("theme", theme);
 		return mv;
 	}
@@ -326,11 +328,12 @@ public class AThemeCtl {
 			int type) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			Theme theme = themeService.find(guid);
+		    GlobalSetting globalSetting = GlobalSetting.getInstance();
+			Theme theme = themeService.find(guid, globalSetting.getRedisOpen());
 //			theme.setThemeType(themeTypeService.find(type));
 			theme.setContent(content);
 			theme.setTitle(title);
-			themeService.update(theme);
+			themeService.update(theme, globalSetting.getRedisOpen());
 			map.put("success", true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -472,9 +475,10 @@ public class AThemeCtl {
 	public Object deleteTheme(String guid) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			Theme theme = themeService.find(guid);
+		    GlobalSetting globalSetting = GlobalSetting.getInstance();
+			Theme theme = themeService.find(guid, globalSetting.getRedisOpen());
 			theme.setIsDelete(true);
-			themeService.update(theme);
+			themeService.update(theme, globalSetting.getRedisOpen());
 			map.put("msg", "删除成功");
 			map.put("success", true);
 		} catch (Exception e) {
@@ -516,8 +520,9 @@ public class AThemeCtl {
 	public Object crushTheme(String guid) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			Theme theme = themeService.find(guid);
-			themeService.crush(theme);
+		    GlobalSetting globalSetting = GlobalSetting.getInstance();
+			Theme theme = themeService.find(guid, globalSetting.getRedisOpen());
+			themeService.crush(theme, globalSetting.getRedisOpen());
 			map.put("msg", "删除成功");
 			map.put("success", true);
 		} catch (Exception e) {
@@ -547,9 +552,10 @@ public class AThemeCtl {
 	public Object restoreTheme(String guid) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			Theme theme = themeService.find(guid);
+		    GlobalSetting globalSetting = GlobalSetting.getInstance();
+			Theme theme = themeService.find(guid, globalSetting.getRedisOpen());
 			theme.setIsDelete(false);
-			themeService.update(theme);
+			themeService.update(theme, globalSetting.getRedisOpen());
 			map.put("msg", "恢复成功");
 			map.put("success", true);
 		} catch (Exception e) {
@@ -571,10 +577,10 @@ public class AThemeCtl {
 	public Object setTop(String guid, int priority){
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			System.out.println(priority);
-			Theme theme = themeService.find(guid);
+		    GlobalSetting globalSetting = GlobalSetting.getInstance();
+			Theme theme = themeService.find(guid, globalSetting.getRedisOpen());
 			theme.setPriority(priority);
-			themeService.update(theme);
+			themeService.update(theme, globalSetting.getRedisOpen());
 			map.put("msg", (priority==0?"取消":"")+"置顶成功");
 			map.put("success", true);
 		} catch (Exception e) {

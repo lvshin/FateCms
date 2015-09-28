@@ -79,25 +79,27 @@ public class RegisterCtl {
 		Map<String,Object> map = new HashMap<String, Object>();
 		GlobalSetting globalSetting = GlobalSetting.getInstance();
 		String private_key = globalSetting.getGeetestKey();
-		GeetestLib geetest = new GeetestLib(private_key);
-
-		String gtResult = "fail";
-		if (geetest.resquestIsLegal(request)) {
-			gtResult = geetest.enhencedValidateRequest(request);
-		} 
-		switch (gtResult) {
-		case "success":break;
-		case "forbidden":
-		case "fail":
-					map.put("success", false);
-					map.put("msg", "验证码错误");
-					return map;
-		default:
-			break;
+		if(private_key!=null){
+    		GeetestLib geetest = new GeetestLib(private_key);
+    
+    		String gtResult = "fail";
+    		if (geetest.resquestIsLegal(request)) {
+    			gtResult = geetest.enhencedValidateRequest(request);
+    		} 
+    		switch (gtResult) {
+    		case "success":break;
+    		case "forbidden":
+    		case "fail":
+    					map.put("success", false);
+    					map.put("msg", "验证码错误");
+    					return map;
+    		default:
+    			break;
+    		}
 		}
 		User user = new User();
 		if(userService.checkLoginName(username)||userService.checkNickName(nickName)){
-			map.put("message", "请勿重复提交");
+			map.put("msg", "请勿重复提交");
 			map.put("success", false);
 			return map;
 		}
@@ -122,7 +124,7 @@ public class RegisterCtl {
 		if(type==1&&globalSetting.getNeedEmailVerify()){
 			sendEmail(user.getEmail(), user.getUid(), globalSetting);
 			url = (String) session.getAttribute("callback");
-			map.put("message", "验证邮件已发送...");
+			map.put("msg", "验证邮件已发送...");
 			map.put("success", true);
 		}else if(type==2){
 			/*手机验证*/
@@ -131,7 +133,7 @@ public class RegisterCtl {
 			if(!mobile.equals(user.getMobile())){
 				user.setMobile(mobile);
 				userService.update(user);
-				map.put("message", "手机号与验证码不匹配，请至个人中心重新验证");
+				map.put("msg", "手机号与验证码不匹配，请至个人中心重新验证");
 				map.put("success", true);
 			}else{
 				String guid = (String) session.getAttribute("security");
@@ -139,13 +141,13 @@ public class RegisterCtl {
 				Date now = new Date();
 				long time = now.getTime() - securityVerification.getVerificationTime().getTime();
 				if(time>securityVerification.getTimeout()*60*1000){
-					map.put("message", "验证码超时，请至个人中心重新验证");
+					map.put("msg", "验证码超时，请至个人中心重新验证");
 					map.put("success", true);
 				}else if(code.trim().equals(smsCode)){
 					user.setMobileStatus(true);
 					userService.update(user);
 					securityVerificationService.delete(securityVerification);
-					map.put("message", "注册成功");
+					map.put("msg", "注册成功");
 					map.put("success", true);
 				}
 			}
@@ -154,7 +156,7 @@ public class RegisterCtl {
 		}
 		else{
 			url = (String) session.getAttribute("callback");
-			map.put("message", "注册成功");
+			map.put("msg", "注册成功");
 			map.put("success", true);
 		}
 		session.removeAttribute("callback");
@@ -163,7 +165,7 @@ public class RegisterCtl {
 		
 		}catch(Exception e){
 			e.printStackTrace();
-			map.put("message", "未知错误");
+			map.put("msg", "未知错误");
 			map.put("success", false);
 		}
 		

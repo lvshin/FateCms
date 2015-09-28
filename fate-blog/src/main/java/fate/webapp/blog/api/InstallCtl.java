@@ -58,12 +58,15 @@ public class InstallCtl {
 			updateParam(Constants.NEED_EMAIL_VERIFY, 1, Param.TYPE_INT);
 			updateParam(Constants.QQ, 0, Param.TYPE_INT);
 			updateParam(Constants.WEIBO, 0, Param.TYPE_INT);
+			updateParam(Constants.REDIS_OPEN, 0, Param.TYPE_INT);
 			globalSetting.setSiteName(appName);
 			globalSetting.setAppName(appName);
 			globalSetting.setAppUrl(url);
 			globalSetting.setAdminEmail(email);
-			globalSetting.setRegAllow(true);
+			globalSetting.setRegAllow(false);
 			globalSetting.setNeedEmailVerify(true);
+			globalSetting.setRedisOpen(false);
+			
 			User user = new User();
 			user.setEmail(email);
 			user.setNickName(nickName);

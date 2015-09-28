@@ -124,6 +124,18 @@
 							<label class="help-block">页面底部可以显示第三方统计</label>
 						</div>
 					</div>
+					<div class="row">
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label>redis缓存设置</label> <br>
+								<input type="radio" id="redis1" name="redisOpen" ${!setting.redisOpen?"checked":""} value="false" /><label for="redis1">否</label>
+								<input type="radio" id="redis2" name="redisOpen" ${setting.redisOpen?"checked":""} value="true" /><label for="redis2">是</label>
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<label class="help-block">是否开启redis缓存，请确保redis配置完成后再开启此项</label>
+						</div>
+					</div>
 					<button class="btn btn-default" onclick="infoSubmit()">提交</button>
 				</form>
 				<label class="help-block">注：站点名称请勿经常修改，否则将影响搜索引擎排名</label>

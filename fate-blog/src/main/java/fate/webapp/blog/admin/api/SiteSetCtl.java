@@ -72,7 +72,7 @@ public class SiteSetCtl {
 	@ResponseBody
 	public Object updateSiteInfo(HttpSession session, String siteName,
 			String appName, String appUrl, String adminEmail, String icp, String appEnName,
-			String statistics, String statisticsHead) {
+			String statistics, String statisticsHead, boolean redisOpen) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			GlobalSetting siteSet = GlobalSetting.getInstance();
@@ -84,6 +84,8 @@ public class SiteSetCtl {
 			siteSet.setAppEnName(appEnName);
 			siteSet.setStatistics(statistics);
 			siteSet.setStatisticsHead(statisticsHead);
+			siteSet.setRedisOpen(redisOpen);
+			
 			updateParam(Constants.SITE_NAME, siteName, Param.TYPE_TEXT);
 			updateParam(Constants.APP_NAME, appName, Param.TYPE_TEXT);
 			updateParam(Constants.APP_URL, appUrl, Param.TYPE_TEXT);
@@ -92,6 +94,7 @@ public class SiteSetCtl {
 			updateParam(Constants.APP_EN_NAME, appEnName, Param.TYPE_TEXT);
 			updateParam(Constants.STATISTICS, statistics, Param.TYPE_TEXT);
 			updateParam(Constants.STATISTICSHEAD, statisticsHead, Param.TYPE_TEXT);
+			updateParam(Constants.REDIS_OPEN, redisOpen?1:0, Param.TYPE_INT);
 			map.put("success", true);
 			map.put("msg", "设置保存成功");
 		} catch (Exception e) {
@@ -627,5 +630,5 @@ public class SiteSetCtl {
         }
         return map;
     }
-	
+    
 }

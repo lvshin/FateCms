@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import cn.jpush.api.JPushClient;
 import cn.jpush.api.common.resp.APIConnectionException;
@@ -19,6 +20,7 @@ import fate.webapp.blog.service.JPushService;
 import fate.webapp.blog.service.ParamService;
 import fate.webapp.blog.utils.DateUtil;
 
+@Service
 public class JPushServiceImpl implements JPushService{
 	
 	@Autowired

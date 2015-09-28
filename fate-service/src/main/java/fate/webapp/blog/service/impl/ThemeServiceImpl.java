@@ -24,33 +24,42 @@ public class ThemeServiceImpl implements ThemeService {
     
     
     
-    public Theme find(String guid) {
-        Theme theme = themeRedisDao.redisThemeFetch(guid);
-        if(theme==null){
-            Theme t = themeDao.find(guid);
-            themeRedisDao.redisThemeUpdate(t);
-            theme = t;
+    public Theme find(String guid, boolean redisOpen) {
+        if(redisOpen){
+            Theme theme = themeRedisDao.redisThemeFetch(guid);
+            if(theme==null){
+                Theme t = themeDao.find(guid);
+                themeRedisDao.redisThemeUpdate(t);
+                theme = t;
+            }
+            return theme;
+        }else{
+            return themeDao.find(guid);
         }
-        return theme;
+        
     }
 
     public void save(Theme theme) {
         themeDao.save(theme);
     }
 
-    public void crush(Theme theme) {
-        themeRedisDao.redisThemeDelete(theme);
+    public void crush(Theme theme, boolean redisOpen) {
+        if(redisOpen){
+            themeRedisDao.redisThemeDelete(theme);
+        }
         themeDao.delete(theme);
     }
     
-    public void crush(String guid) {
+    public void crush(String guid, boolean redisOpen) {
         Theme theme = themeDao.find(guid);
-        crush(theme);
+        crush(theme, redisOpen);
     }
 
-    public Theme update(Theme theme) {
+    public Theme update(Theme theme, boolean redisOpen) {
         Theme t = themeDao.update(theme);
-        themeRedisDao.redisThemeDelete(t);
+        if(redisOpen){
+            themeRedisDao.redisThemeDelete(t);
+        }
         return t;
     }
 
@@ -74,15 +83,20 @@ public class ThemeServiceImpl implements ThemeService {
         return themeDao.statistics(fid, datetype, day);
     }
     
-    public Theme findByDateAndTitle(String date, String title){
+    public Theme findByDateAndTitle(String date, String title, boolean redisOpen){
         String key = date+"-"+title;
-        Theme theme = themeRedisDao.redisThemeFetch(themeRedisDao.redisGuidFetch(key));
-        if(theme==null){
-            theme = themeDao.findByDateAndTitle(date, title);
-            if(theme!=null)
-            themeRedisDao.redisGuidUpdate(key, theme.getGuid());
+        if(redisOpen){
+            Theme theme = themeRedisDao.redisThemeFetch(themeRedisDao.redisGuidFetch(key));
+            if(theme==null){
+                theme = themeDao.findByDateAndTitle(date, title);
+                if(theme!=null)
+                themeRedisDao.redisGuidUpdate(key, theme.getGuid());
+            }
+            return theme;
+        }else{
+            return themeDao.findByDateAndTitle(date, title);
         }
-        return theme;
+        
     }
 
     @Override
