@@ -26,12 +26,12 @@ public class SmsAgent {
 		/**
 		 * 微米账号的接口UID
 		 */
-		para.put("uid", "8TWLspIskXMH");
+		para.put("uid", "");
 
 		/**
 		 * 微米账号的接口密码
 		 */
-		para.put("pas", "8uf8m7pj");
+		para.put("pas", "");
 
 		/**
 		 * 接口返回类型：json、xml、txt。默认值为txt
