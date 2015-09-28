@@ -1,0 +1,30 @@
+@CHARSET "utf-8";
+.Validform_checktip{padding-left: 20px;}
+.Validform_wrong{color: red!important;background: url("../images/error.png") no-repeat left center;}
+.Validform_right{color: #71b83d!important;background: url("../images/right.png") no-repeat left center;}
+.passwordStrength{
+
+}
+.passwordStrength b{
+	font-weight:normal;
+}
+.passwordStrength b,.passwordStrength span{
+	display:inline-block; 
+	vertical-align:middle;
+	line-height:16px;
+	line-height:18px\9;
+	height:16px;
+}
+.passwordStrength span{
+	width:45px; 
+	text-align:center; 
+	background-color:#d0d0d0; 
+	border-right:1px solid #fff;
+}
+.passwordStrength .last{
+	border-right:none;
+}
+.passwordStrength .bgStrength{
+	color:#fff;
+	background-color:#71b83d;
+}

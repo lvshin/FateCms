@@ -1,0 +1,52 @@
+@charset "utf-8";
+* {margin:0px auto; padding: 0;}
+img {border: none;}
+a { outline:none; text-decoration: none;color: #333333;}
+ul, ol { list-style: none outside none;}
+body a:hover { color: #FF6600;}
+body {color: #333333; font-family:"微软雅黑"; font-size: 14px; line-height: 18px;background: #eee;}
+.clear{clear:both; height: 0px;	_display:inline;}
+#main{margin-top:20px;margin-left:15px;border-top:1px solid #dddddd;}
+/*登录页*/
+.login{width:958px;height:357px;margin-bottom:40px;margin-top:20px; border:#e8e8e8 3px solid;background:#fff;position:relative;
+filter:progid:DXImageTransform.Microsoft.Shadow(color=#909090,direction=120,strength=4);/*ie*/
+-moz-box-shadow: 2px 2px 15px #909090;/*firefox*/
+-webkit-box-shadow: 2px 2px 15px #909090;/*safari或chrome*/
+box-shadow:2px 2px 15px #909090;/*opera或ie9*/}
+.logo_left{float: left;background: url("../images/logo.png") no-repeat;height:150px;width:185px;}
+.logo_right{float: right;/*background: url("../images/building/HY1.png");*/height:150px;width:164px;}
+.login_logo{width:958px;height:150px;margin-top: 10px;}
+.login_left{width:511px;height:357px;float: left;background: url("../images/building/DM.jpg") no-repeat;}
+.login_right{width:427px;height:357px;float: right;}
+.form{margin-top: 60px;}
+.item{margin-left: 80px;margin-top: 10px;}
+.item span{color: #999999;height: 20px;line-height: 20px;display: block;margin: 1px 0px 5px 0px;}
+.item-info{}
+.loginInput{width:250px; height:27px;border:1px solid #ddd; padding:0px 30px 0px 5px; color:#555;}
+.item-info label{font-size: 14px;height:100%;vertical-align:middle;display:inline-block;color:#333;margin-right: 20px;}
+.item-info .checkbox{margin:6px 3px 3px 2px;vertical-align:middle;}
+.btn-entry{width:287px;height:34px;font-family:"微软雅黑";font-size:18px;color:#fff; background:#808080;border-radius:3px;}
+.btn-entry:hover{background:#888888;}
+.btn-img{cursor:pointer;overflow:hidden;margin:0;padding:0;border:0;text-align:center;}
+.disable{background: #f0f0f0;color:#808080;cursor: default;}
+.disable:hover{background: #f0f0f0;color:#808080;}
+.right{min-height:600px; width:87%;padding:15px 20px 20px; overflow:hidden;float:left;}
+.decoration_reinforce{width:70px;height:100px;position: absolute;background: url("../images/building/reinforce2_2.png");left:-45px;bottom: -5px;}
+.tpa_btns{}
+.register{background: #888888;width:20px;height:80px;position: absolute;right:-43px;border-top-right-radius:3px;border-bottom-right-radius:3px;
+padding:20px 10px 20px 10px;
+filter:progid:DXImageTransform.Microsoft.Shadow(color=#909090,direction=120,strength=4);/*ie*/
+-moz-box-shadow: 2px 2px 15px #909090;/*firefox*/
+-webkit-box-shadow: 2px 2px 15px #909090;/*safari或chrome*/
+box-shadow:2px 2px 15px #909090;/*opera或ie9*/}
+.register:hover{background: #909090;}
+.register a{font-family:"微软雅黑";font-size:18px;color:#fff;text-align: center;margin: 0 auto;}
+.register a:hover{color: #fff;text-decoration: none;}
+/*弹出页面*/
+.formgroup{margin:5px 5px 15px 5px;min-height:20px;}
+.formgroup span{word-break:normal; width:auto; display:block; white-space:pre-wrap;word-wrap : break-word ;overflow: hidden ;}
+
+.login .qq_login,.login .wb_connect{padding-right: 10px; margin-right: 10px;float: left;}
+.login .qq_login>div,.login .wb_connect>div{margin-top: 8px;}
+.login .qq_login>.qq_login_btn{background: url("../images/qq/Connect_logo_3.png") no-repeat;width:120px;height:24px;cursor: pointer;}
+.login .wb_connect>.wb_connect_btn{background: url("../images/weibo/loginButton_24.png") no-repeat;width:102px;height:24px;cursor: pointer;}

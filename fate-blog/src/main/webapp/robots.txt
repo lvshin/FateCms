@@ -1,0 +1,12 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /css/
+Disallow: /images/
+Disallow: /install/
+Disallow: /js/
+Disallow: /fonts/
+Disallow:/WEB-INF/*
+Disallow:/theme/addTheme*
+Disallow:/op/getQR
+Disallow:/op/login/toWeibo
+Disallow:/op/login/toQQ

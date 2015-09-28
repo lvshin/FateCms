@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+	http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+	version="1.0">
+
+	<persistence-unit name="fate-persistence"
+		transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<class>fate.webapp.blog.model.Theme</class>
+		<class>fate.webapp.blog.model.ThemeTag</class>
+		<class>fate.webapp.blog.model.Comments</class>
+		<class>fate.webapp.blog.model.FileEntity</class>
+		<class>fate.webapp.blog.model.GlobalSetting</class>
+		<class>fate.webapp.blog.model.SecurityVerification</class>
+		<class>fate.webapp.blog.model.ThirdPartyAccess</class>
+		<class>fate.webapp.blog.model.ThirdPartyAccount</class>
+		<class>fate.webapp.blog.model.User</class>
+		<class>fate.webapp.blog.model.UserSession</class>
+		<class>fate.webapp.blog.model.SystemMessage</class>
+		<class>fate.webapp.blog.model.VoteRecord</class>
+		<class>fate.webapp.blog.model.Forum</class>
+		<class>fate.webapp.blog.model.Media</class>
+		<class>fate.webapp.blog.model.Param</class>
+		<class>fate.webapp.blog.model.Announcement</class>
+		<class>fate.webapp.blog.model.PingRecord</class>
+		<class>fate.webapp.blog.model.Navi</class>
+		<class>fate.webapp.blog.model.Spider</class>
+		<class>fate.webapp.blog.model.AgentLog</class>
+		<class>fate.webapp.blog.model.Advertisement</class>
+		<class>fate.webapp.blog.model.ApiLog</class>
+		<class>fate.webapp.blog.model.FriendLink</class>
+		<class>fate.webapp.blog.model.ExceptionLog</class>
+		<class>fate.webapp.blog.model.DuoShuo</class>
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="true" />
+		</properties>
+	</persistence-unit>
+</persistence>

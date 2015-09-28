@@ -1,0 +1,12 @@
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+/ecs-api.zip
+*datasource.properties
+*/target*
+*.setting*
+/ecs-api/
