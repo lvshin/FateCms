@@ -59,7 +59,7 @@
 							</div>
 						</div>
 						<div class="reg" ${setting.regAllow?"style='display:block;'":""}>
-							<div class="row">
+							<div class="row hidden">
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="minLengthOfPassword">最小密码长度</label> <input type="text" class="form-control" id="minLengthOfPassword" name="minLengthOfPassword" value="${setting.minLengthOfPassword}" >

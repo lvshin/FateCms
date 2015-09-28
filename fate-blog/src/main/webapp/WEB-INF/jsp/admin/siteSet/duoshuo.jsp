@@ -73,7 +73,7 @@
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="duoshuoSecret">多说应用名</label> <input type="password" class="form-control" id="duoshuoSecret" name="duoshuoSecret" value="${setting.duoshuoSecret}" >
+									<label for="duoshuoSecret">多说密钥</label> <input type="password" class="form-control" id="duoshuoSecret" name="duoshuoSecret" value="${setting.duoshuoSecret}" >
 								</div>
 							</div>
 							<div class="col-md-6">
