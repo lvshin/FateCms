@@ -44,7 +44,7 @@ public class SmsAgent {
 		 * 2、签名格式：【***】，签名内容为三个汉字以上（包括三个）；<br>
 		 * 3、短信内容不允许双签名，即短信内容里只有一个“【】”<br>
 		 */
-		para.put("cid", "ohGOgRMLLSPl");
+		para.put("cid", "");
 
 		/**
 		 * 传入模板参数。<br>
