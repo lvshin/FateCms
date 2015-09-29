@@ -312,6 +312,8 @@
 		<module>fate-utils</module>
 		<module>weibo4j</module>
 		<module>fate-blog</module>
+		<module>fate-test</module>
 		<module>qq4j</module>
+		<module>ecs-api</module>
 	</modules>
 </project>
