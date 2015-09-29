@@ -220,7 +220,6 @@ public class SecurityVerificationCtl {
 			userService.update(securityVerification.getUser());
 			UserSession userSession = userSessionService.findByUserId(securityVerification.getUser().getUid());
 			User user = securityVerification.getUser();
-			user.setEmail(securityVerification.getValue());
 			user.setEmailStatus(true);
 			userService.update(user);
 			session.setAttribute("userSession", userSession);

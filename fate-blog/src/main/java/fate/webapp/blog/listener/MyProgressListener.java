@@ -5,7 +5,6 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import fate.webapp.blog.model.ProgressEntity;
-import fate.webapp.blog.resolver.ProgressListener;
 
 public class MyProgressListener implements ProgressListener{
 	private HttpSession session;  

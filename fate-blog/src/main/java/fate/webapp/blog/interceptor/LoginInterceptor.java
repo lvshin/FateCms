@@ -27,9 +27,8 @@ public class LoginInterceptor implements HandlerInterceptor{
 		String bwSessionId = (String) session.getAttribute("bwSessionId");
 		UserSession userSession = (UserSession) session.getAttribute("userSession");
 		String base = request.getContextPath();
-		GlobalSetting globalSetting = (GlobalSetting) session.getAttribute("setting");
+		GlobalSetting globalSetting = GlobalSetting.getInstance();
 		boolean flag = false;
-//		base = base.substring(0,base.lastIndexOf("/"));
 		if(userSession!=null&&bwSessionId!=null && bwSessionId.equals(userSession.getSessionId())){
 			//防止在后台url泄露的情况下，用户直接输入地址进入后台，需验证是否有管理员权限
 			if(request.getServletPath().contains("/admin")&&userSession.getUser().getUserType()!=User.USER_TYPE_ADMIN)

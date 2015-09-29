@@ -153,10 +153,8 @@ public class SpiderInterceptor implements HandlerInterceptor {
 				spiderService.save(spider);
 			}
 			spiderName = spider_name[i];
-//			System.out.println(spider_name[i]);
 		}else if(i<spider_key.length){
 			spiderName = spider_key[i];
-//			System.out.println(spider_key[i]);
 		}
 		return spiderName;
 	}
@@ -170,8 +168,6 @@ public class SpiderInterceptor implements HandlerInterceptor {
 			HttpSession session = request.getSession(false);
 			if(session!=null&&session.getAttribute("checked")==null){
 				SiteStatistics.reduce();
-//				System.out.println("检测到蜘蛛:"+spider);
-//				System.out.println("sessopn-1");
 				session.setAttribute("checked", "checked");
 			}
 		}else{
@@ -209,7 +205,7 @@ public class SpiderInterceptor implements HandlerInterceptor {
 			Object arg2) throws Exception {
 		GlobalSetting globalSetting = GlobalSetting.getInstance();
 		String appUrl = globalSetting.getAppUrl();
-		String referer = request.getHeader("Referer");
+//		String referer = request.getHeader("Referer");
 		if(appUrl!=null&&!request.getServletPath().contains("WEB-INF")&&!request.getServerName().equals(appUrl)){
 			response.setStatus(301);
 			String url = "http://"+appUrl+request.getRequestURI();

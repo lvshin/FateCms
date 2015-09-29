@@ -207,6 +207,8 @@ public class ThemeCtl {
 		GlobalSetting globalSetting = GlobalSetting.getInstance();
 		try{
 			UserSession userSession = (UserSession) session.getAttribute("userSession");
+			
+			//正常用户才能评论
 			if(!(userSession.getUser().getEmailStatus()||userSession.getUser().getMobileStatus())&&userSession.getType()==0){
 				map.put("success", false);
 				map.put("msg", "您的帐号处于未验证状态，请先验证您的邮箱/手机！");
@@ -227,7 +229,10 @@ public class ThemeCtl {
 			comments.setCommentContent(commentContent);
 			comments.setUser(userSession.getUser());
 			commentsService.save(comments);
+			
+			//更新到redis
 			themeService.update(themeService.find(themeGuid, globalSetting.getRedisOpen()), globalSetting.getRedisOpen());
+			
 			map.put("success", true);
 			map.put("msg", "评论成功");
 		}catch(Exception e){
@@ -256,11 +261,14 @@ public class ThemeCtl {
 				forum = theme.getForum();
 				mv.addObject("theme", theme);
 			}
-			else
-				forum = forumService.find(fid);
+			else{
+			    forum = forumService.find(fid);
+			}
 		}
-		else
-			forum = forumService.find(fid);
+		else{
+		    forum = forumService.find(fid);
+		}
+			
 		if(forum==null||forum.getType()==Forum.TYPE_REGION){
 			mv.addObject("success", false);
 			mv.addObject("msg", "所选版块不存在");

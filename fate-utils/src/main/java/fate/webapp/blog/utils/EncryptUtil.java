@@ -25,7 +25,8 @@ public class EncryptUtil {
     //对密码加密 
     public static String pwd(Date date, String pwd){
 		long time = date.getTime();
-		time = time/1000;
+		//mysql里的时间戳精确到秒，按问题现状来看可能有四舍五入，所以这里要多除10
+		time = time/10000;
 		return EncryptUtil.md5(pwd+time);
 	}
   

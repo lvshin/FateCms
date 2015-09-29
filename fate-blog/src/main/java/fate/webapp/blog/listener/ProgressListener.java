@@ -1,4 +1,4 @@
-package fate.webapp.blog.resolver;
+package fate.webapp.blog.listener;
 
 public interface ProgressListener {
 

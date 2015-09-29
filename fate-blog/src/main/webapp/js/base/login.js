@@ -94,7 +94,7 @@ function login() {
 			else {
 				$btn.button('reset');
 				var d = dialog({
-					content : data.message,
+					content : data.msg,
 					title : '提示',
 					width : '200px',
 					okValue : '确定',
