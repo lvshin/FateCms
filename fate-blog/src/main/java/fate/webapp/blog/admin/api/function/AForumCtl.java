@@ -190,13 +190,6 @@ public class AForumCtl {
 		} else {
 			// 上传到本地
 		}
-//		FileEntity fileEntity = new FileEntity();
-//		fileEntity.setBucketName(ossSetting.getBucket());
-//		fileEntity.setFileName(filename);
-//		fileEntity.setFilePath("");
-//		fileEntity.setSize(uploadFile.getSize());
-//		fileEntity.setState(ProgressEntity.upload_state_complete);
-//		fileEntityService.save(fileEntity);
 
 		String url = null;
 		if (globalSetting.getAliyunUsed())

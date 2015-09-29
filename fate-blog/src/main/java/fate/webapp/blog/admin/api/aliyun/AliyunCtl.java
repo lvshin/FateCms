@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,6 +49,8 @@ import fate.webapp.blog.utils.Strings;
 @RequestMapping("/admin/aliyun")
 public class AliyunCtl {
 
+    private static final Logger log = Logger.getLogger(AliyunCtl.class);
+    
     @Autowired
     private ParamService paramService;
 
@@ -170,8 +173,9 @@ public class AliyunCtl {
             map.put("success", true);
             map.put("msg", "设置保存成功");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("设置保存失败", e);
             map.put("success", false);
+            map.put("msg", "设置保存失败");
         }
         return map;
     }
@@ -186,7 +190,7 @@ public class AliyunCtl {
             map.put("success", true);
             map.put("msg", "设置保存成功");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("设置失败", e);
             map.put("success", false);
             map.put("msg", "设置失败");
         }
@@ -250,8 +254,9 @@ public class AliyunCtl {
             map.put("success", true);
             map.put("msg", "设置保存成功");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("设置保存失败", e);
             map.put("success", false);
+            map.put("msg", "设置保存失败");
         }
         return map;
     }
@@ -286,8 +291,9 @@ public class AliyunCtl {
             map.put("success", true);
             map.put("msg", "设置保存成功");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("设置保存失败", e);
             map.put("success", false);
+            map.put("msg", "设置保存失败");
         }
         return map;
     }
@@ -318,7 +324,7 @@ public class AliyunCtl {
             map.put("buckets", buckets);
             map.put("success", true);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("获取bucket列表失败", e);
             map.put("success", false);
             map.put("msg", "获取bucket列表失败");
         }
@@ -382,14 +388,18 @@ public class AliyunCtl {
         List<String> dirList = listing.getCommonPrefixes();
         // 排序，文件夹在前
         Collections.sort(objList, (os1, os2) -> {
-            if (os1.getKey().endsWith("/") && os2.getKey().endsWith("/"))
+            if (os1.getKey().endsWith("/") && os2.getKey().endsWith("/")){
                 return os1.getKey().compareTo(os2.getKey());
-            else if (os1.getKey().endsWith("/"))
+            }
+            else if (os1.getKey().endsWith("/")){
                 return -1;
-            else if (os2.getKey().endsWith("/"))
+            }
+            else if (os2.getKey().endsWith("/")){
                 return 1;
-            else
+            }
+            else{
                 return os1.getKey().toLowerCase().compareTo(os2.getKey().toLowerCase());
+            }
         });
         // 排序按中文顺序
         Collections.sort(
@@ -583,93 +593,62 @@ public class AliyunCtl {
         int index = key.substring(0, key.length() - 1).lastIndexOf("/");
         String keyTitle = key.substring(index + 1).replace("+", "*");
         Param ossBucket = paramService.findByKey(Constants.OSS_BUCKET);
-        GlobalSetting globalSetting = (GlobalSetting) request.getSession().getAttribute("setting");
+        GlobalSetting globalSetting = GlobalSetting.getInstance();
         String url = null;
-        Param OSSUrl = paramService.findByKey(Constants.OSS_URL);
-        Param OSSEndpoint = paramService.findByKey(Constants.OSS_ENDPOINT);
-        if (globalSetting.getAliyunUsed())
+        Param ossUrl = paramService.findByKey(Constants.OSS_URL);
+        Param ossEndpoint = paramService.findByKey(Constants.OSS_ENDPOINT);
+        if (globalSetting.getAliyunUsed()){
             url = "http://"
-                    + (OSSUrl == null
-                            ? ossBucket.getTextValue() + "." + OSSEndpoint.getTextValue()
-                            : OSSUrl.getTextValue()) + "/"
+                    + (ossUrl == null
+                            ? ossBucket.getTextValue() + "." + ossEndpoint.getTextValue()
+                            : ossUrl.getTextValue()) + "/"
                     + java.net.URLEncoder.encode(java.net.URLEncoder.encode(key, "UTF-8"), "UTF-8");
+        }
         else {
             key = key.replace("/", "|").replace("+", "*");
             url = request.getContextPath() + "/file/getfile/" + ossBucket.getTextValue() + "/"
                     + java.net.URLEncoder.encode(java.net.URLEncoder.encode(key, "UTF-8"), "UTF-8");
         }
-        if (type.equals("mp3") || type.equals("ogg") || type.equals("m4a") || type.equals("flac")
-                || type.equals("ape"))
-            content = "javascript:open('"
-                    + url
-                    + "','"
-                    + java.net.URLEncoder.encode(java.net.URLEncoder.encode(keyTitle, "UTF-8"),
-                            "UTF-8") + "','" + type + "','0')";
-        else if (type.equals("mp4") || type.equals("mkv") || type.equals("wmv")
-                || type.equals("rmvb") || type.equals("flv")) {
-            content = "javascript:open('"
-                    + url
-                    + "','"
-                    + java.net.URLEncoder.encode(java.net.URLEncoder.encode(keyTitle, "UTF-8"),
-                            "UTF-8") + "','" + type + "','1')";
+        
+        switch (type) {
+            case "mp3" :
+            case "ogg" :
+            case "m4a" :
+            case "flac" :
+            case "ape" :
+                content = "javascript:open('"
+                        + url
+                        + "','"
+                        + java.net.URLEncoder.encode(java.net.URLEncoder.encode(keyTitle, "UTF-8"),
+                                "UTF-8") + "','" + type + "','0')";
+                break;
+            case "mp4" :
+            case "mkv" :
+            case "wmv" :
+            case "rmvb" :
+            case "flv" :
+                content = "javascript:open('"
+                        + url
+                        + "','"
+                        + java.net.URLEncoder.encode(java.net.URLEncoder.encode(keyTitle, "UTF-8"),
+                                "UTF-8") + "','" + type + "','1')";
+                break;
+            case "jpg" :
+            case "jpeg" :
+            case "png" :
+            case "ico" :
+            case "gif" :
+                content = "javascript:open('<img id=img src="
+                        + url
+                        + " style=max-width:1200px;/>','"
+                        + java.net.URLEncoder.encode(java.net.URLEncoder.encode(keyTitle, "UTF-8"),
+                                "UTF-8") + "','" + type + "','2')";
+                break;
+                
+            default :
+                break;
         }
-
-        else if (type.equals("jpg") || type.equals("jpeg") || type.equals("png")
-                || type.equals("ico") || type.equals("gif")) {
-            // HttpURLConnection conn = null;
-            // try {
-            // long start = Calendar.getInstance().getTimeInMillis();
-            // URL url = new
-            // URL(Constants.basic_url+"/file/getfile/"+java.net.URLEncoder.encode(java.net.URLEncoder.encode(key,"UTF-8"),"UTF-8")+"?bucketName="+bucketName);
-            // conn = (HttpURLConnection) url.openConnection();
-            // BufferedImage sourceImg =ImageIO.read(conn.getInputStream());
-            // int width = sourceImg.getWidth();
-            // int height = sourceImg.getHeight();
-            // long end = Calendar.getInstance().getTimeInMillis();
-            // if(width>1200)
-            // {
-            //
-            // height = (int) (1.0*1200/width*height);
-            // width = 1200;
-            // }
-            content = "javascript:open('<img id=img src="
-                    + url
-                    + " style=max-width:1200px;/>','"
-                    + java.net.URLEncoder.encode(java.net.URLEncoder.encode(keyTitle, "UTF-8"),
-                            "UTF-8") + "','" + type + "','2')";
-            // } catch (FileNotFoundException e) {
-            // // TODO Auto-generated catch block
-            // e.printStackTrace();
-            // } catch (IOException e) {
-            // // TODO Auto-generated catch block
-            // e.printStackTrace();
-            // }finally{
-            // if(conn!=null)
-            // conn.disconnect();
-            // }
-
-        }
-        // else if(type.equals("txt")||type.equals("xml")||type.equals("sql")){
-        // try {
-        // byte[] b = new byte[102400];
-        // URL url = new
-        // URL(Constants.basic_url+"/file/getfile/"+java.net.URLEncoder.encode(java.net.URLEncoder.encode(key,"UTF-8"),"UTF-8")+"?bucketName="+bucketName+"&type="+type);
-        // HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        // BufferedInputStream bis = new
-        // BufferedInputStream(conn.getInputStream());
-        // bis.read(b);
-        // content =
-        // "javascript:open('<pre>"+java.net.URLEncoder.encode(java.net.URLEncoder.encode(new
-        // String(b,"utf-8"),"UTF-8"),"UTF-8")+"</pre>','"+key+"','"+type+"')";
-        // } catch (MalformedURLException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // } catch (IOException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
-        // }
-
+        
         return content;
     }
 
@@ -718,12 +697,8 @@ public class AliyunCtl {
         // 鑾峰彇Bucket鍐呮墍鏈変笂浼犱簨浠�
         MultipartUploadListing listing = ossService.listMultipartUploads();
 
-        // List<Bucket> buckets = ossService.listBuckets();
-
         // 閬嶅巻鎵�湁涓婁紶浜嬩欢
         for (MultipartUpload multipartUpload : listing.getMultipartUploads()) {
-            System.out.println("Key: " + multipartUpload.getKey() + " UploadId: "
-                    + multipartUpload.getUploadId());
             Map<String, String> map = new HashMap<String, String>();
             map.put("fileName", multipartUpload.getKey());
             map.put("uploadId", multipartUpload.getUploadId());
@@ -740,7 +715,6 @@ public class AliyunCtl {
             list.add(map);
         }
         mv.addObject("list", list);
-        // mv.addObject("bucketName", ossSetting.getBucket());
         return mv;
     }
 
@@ -760,9 +734,11 @@ public class AliyunCtl {
         try {
             ossService.abortMultipartUpload(key, uploadId);
             map.put("success", true);
+            map.put("msg", "中断任务成功");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("中断任务失败", e);
             map.put("success", false);
+            map.put("msg", "中断任务失败");
         }
         return map;
     }

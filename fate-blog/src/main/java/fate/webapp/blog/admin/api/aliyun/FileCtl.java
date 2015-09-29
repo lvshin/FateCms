@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -41,11 +42,10 @@ import fate.webapp.blog.utils.Strings;
 @RequestMapping("/file")
 public class FileCtl {
 
+    private static final Logger log = Logger.getLogger(FileCtl.class);
+    
 	// 设置每块为 200K
 	final long partSize1 = 1024 * 200;
-
-	// @Autowired
-	// private FileEntityService fileEntityService;
 
 	@Autowired
 	private ParamService paramService;
@@ -53,88 +53,6 @@ public class FileCtl {
 	@Autowired
 	private OSSService ossService;
 
-//	@RequestMapping(value = "/getfile/{bucketName}/{dir}/{key}.{type}")
-//	@ResponseBody
-//	public void fileOpen(@PathVariable("bucketName") String bucketName,
-//			@PathVariable("key") String key, @PathVariable("type") String type,
-//			@PathVariable("dir") String dir, HttpServletRequest request,
-//			HttpServletResponse response) throws UnsupportedEncodingException {
-//
-//		key = java.net.URLDecoder.decode(key, "utf-8");
-//
-//		key = key.replace("|", "/").replace("*", "+") + "." + type;
-//		OSS oss = OSS.getInstance();
-//		Map<String, Object> map = new HashMap<String, Object>();
-//		InputStream objectContent = null;
-//		String contentType = "";
-//		if (key.endsWith("mp3"))
-//			contentType = "audio/mp3";
-//		else if (key.endsWith("mp4"))
-//			contentType = "video/mpeg4";
-//		else if (key.equalsIgnoreCase("rmvb"))
-//			contentType = "audio/x-pn-realaudio";
-//		else if (key.endsWith("png"))
-//			contentType = "application/x-png";
-//		try {
-//			response.setContentType(contentType);
-//			int index = key.substring(0, key.length() - 1).lastIndexOf("/");
-//			response.setHeader("Content-Disposition", "attachment;filename="
-//					+ new String(key.substring(index + 1).getBytes("gbk"),
-//							"ISO8859-1") + "");
-//			GetObjectRequest getObjectRequest = new GetObjectRequest(
-//					bucketName, dir + "/" + key);
-//			OutputStream out = response.getOutputStream();
-//
-//			OSSObject object = oss.getClient().getObject(getObjectRequest);
-//
-//			ObjectMetadata meta = object.getObjectMetadata();
-//			response.setHeader("Accept-Ranges", "bytes");
-//			response.setHeader("Connection", "close");
-//			response.setHeader("Content-Length", "" + meta.getContentLength());
-//			String range = request.getHeader("Range");
-//			long rangeStart = range == null ? 0 : Long.parseLong(range
-//					.substring(range.indexOf("=") + 1, range.indexOf("-")));
-//			long rangeEnd = range == null ? meta.getContentLength() : range
-//					.substring(range.indexOf("-") + 1).equals("") ? meta
-//					.getContentLength() : Long.parseLong(range.substring(range
-//					.indexOf("-") + 1));
-//			// if(rangeStart!=0)
-//			// response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
-//			response.setHeader("Content-Range",
-//					"bytes " + rangeStart + "-" + ((int) rangeEnd - 1) + "/"
-//							+ (int) meta.getContentLength());
-//
-//			byte[] b = new byte[1024 * 1024 * 5];
-//			int off = (int) rangeStart;
-//			int num = 0;
-//			objectContent = object.getObjectContent();
-//			objectContent.skip(rangeStart);
-//			while (off < rangeEnd) {
-//				// out.write(b, 0, len);
-//				// num+=len;
-//				// objectContent = object.getObjectContent();
-//				int len = objectContent.available();
-//				objectContent.read(b, 0, len);
-//				off += len;
-//				out.write(b, 0, len);
-//			}
-//			out.flush();
-//			out.close();
-//			map.put("success", true);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			map.put("success", false);
-//		} finally {
-//
-//			try {
-//				if (objectContent != null)
-//					objectContent.close();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-//	}
 
 	@RequestMapping("/uploadPage")
 	public ModelAndView uploadPage(String bucketName) {
@@ -197,13 +115,6 @@ public class FileCtl {
 		} else {
 			// 上传到本地
 		}
-		// FileEntity fileEntity = new FileEntity();
-		// fileEntity.setBucketName(ossSetting.getBucket());
-		// fileEntity.setFileName(filename);
-		// fileEntity.setFilePath("");
-		// fileEntity.setSize(uploadFile.getSize());
-		// fileEntity.setState(ProgressEntity.upload_state_complete);
-		// fileEntityService.save(fileEntity);
 
 		String url = null;
 		Param OSSUrl = paramService.findByKey(Constants.OSS_URL);
@@ -227,7 +138,6 @@ public class FileCtl {
 			String folder, HttpSession session, HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String key = uploadFile.getOriginalFilename();
-//		String uploadId = null;
 		if (uploadFile.getSize() > partSize1) {
 			map = ossService.multipartUpload(bucketName, uploadFile, folder);
 		} else {
@@ -239,14 +149,6 @@ public class FileCtl {
 				map.put("success", true);
 			}
 		}
-		// FileEntity fileEntity = new FileEntity();
-		// fileEntity.setBucketName(bucketName);
-		// fileEntity.setFileName(uploadFile.getOriginalFilename());
-		// fileEntity.setFilePath(folder);
-		// fileEntity.setUploadId(uploadId);
-		// fileEntity.setSize(uploadFile.getSize());
-		// fileEntity.setState(ProgressEntity.upload_state_OSS_uploading);
-		// fileEntityService.save(fileEntity);
 
 		return map;
 	}
@@ -280,59 +182,48 @@ public class FileCtl {
 	// return list;
 	// }
 
-	@RequestMapping("/listMultipartUploads")
-	public ModelAndView listMultipartUploads(String bucketName) {
-
-		ModelAndView mv = new ModelAndView(
-				"admin/fileManager/listMultipartUploads");
-		return mv;
-	}
-
-	// @RequestMapping("/playAudio")
-	// public ModelAndView playAudio(String bucketName, String key)
-	// throws UnsupportedEncodingException {
-	// ModelAndView mv = new ModelAndView("admin/fileManager/audio");
-	// Cloud cloud = Cloud.getInstance(Constants.endpoint, accessKeyId,
-	// accessKeySecret);
-	// if (client == null)
-	// client = cloud.getClient();
-	// key = java.net.URLDecoder.decode(key, "utf-8");
-	// mv.addObject("bucketName", bucketName);
-	// mv.addObject("key", key);
-	// mv.addObject("type", key.substring(key.indexOf(".") + 1));
-	// return mv;
-	// }
-
+	/**
+	 * 生成链接
+	 * @param bucketName
+	 * @param key
+	 * @param timeout
+	 * @param timeType
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
 	@RequestMapping(value = "/getFileTempUrl")
 	@ResponseBody
 	public Object getFileTempUrl(String bucketName, String key, int timeout,
-			int timeType) throws UnsupportedEncodingException {
+			int timeType){
 		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+            key = java.net.URLDecoder.decode(key, "utf-8");
+            key = key.replace("|", "/").replace("*", "+");
+            switch (timeType) {
+            case 1:
+                timeout *= 60;
+                break;
+            case 2:
+                timeout *= 3600;
+                break;
+            case 3:
+                timeout *= (24 * 3600);
+                break;
+            default:
+                break;
+            }
+            // 设置URL过期时间为1小时
+            Date expiration = new Date(new Date().getTime() + timeout * 1000);
 
-		key = java.net.URLDecoder.decode(key, "utf-8");
-		key = key.replace("|", "/").replace("*", "+");
-		switch (timeType) {
-		case 1:
-			timeout *= 60;
-			break;
-		case 2:
-			timeout *= 3600;
-			break;
-		case 3:
-			timeout *= (24 * 3600);
-			break;
-		default:
-			break;
-		}
-		// 设置URL过期时间为1小时
-		Date expiration = new Date(new Date().getTime() + timeout * 1000);
-
-		// 生成URL
-		String url = ossService.generatePresignedUrl(key,
-				expiration).toString();
-		System.out.println(url);
-		url = url.replace("-internal", "");
-		map.put("url", url);
+            // 生成URL
+            String url = ossService.generatePresignedUrl(key, expiration).toString();
+            //全部转为公网地址
+            url = url.replace("-internal", "");
+            map.put("url", url);
+        } catch (UnsupportedEncodingException e) {
+            log.error("无效的编码");
+        }
+		
 		return map;
 	}
 
@@ -364,7 +255,6 @@ public class FileCtl {
 	@RequestMapping("/newFolder")
 	@ResponseBody
 	public Object newFolder(String folderName, String curFolder) {
-//		String key = curFolder + folderName + "/";
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("success",
 				ossService.newFolder(folderName, curFolder));
@@ -385,8 +275,6 @@ public class FileCtl {
 	@ResponseBody
 	public Object filelist(@RequestParam(defaultValue="") String dir,String order,String path, HttpServletRequest request) throws UnsupportedEncodingException{
 		Map<String, Object> map = new HashMap<String, Object>();
-		System.out.println(path);
-		System.out.println(dir);
 		if(!path.equals("")&&!path.endsWith("/"))
 			path += "/";
 		path = java.net.URLDecoder.decode(path, "utf-8");
@@ -400,12 +288,9 @@ public class FileCtl {
 			pathList.add(paths[i]);
 			parentpathList.add(path.substring(0,path.indexOf(paths[i])));
 		}
-//		parentpathList.add(path);
-		System.out.println(path.equals("/"));
 		ObjectListing listing = ossService.getList(path);
 		
 		List<Hashtable<String, Object>> list = getFileList(path, "", listing, request);
-		System.out.println(pathList.get(pathList.size()-1));
 		map.put("current_dir_path", path);
 		map.put("moveup_dir_path", parentpathList.size()>0?parentpathList.get(parentpathList.size()-1):"");
 		map.put("file_list", list);

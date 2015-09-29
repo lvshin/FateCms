@@ -16,6 +16,11 @@ import fate.webapp.blog.model.Advertisement;
 import fate.webapp.blog.model.Index;
 import fate.webapp.blog.service.AdvertisementService;
 
+/**
+ * 广告相关，开发中
+ * @author Fate
+ *
+ */
 @Controller
 @RequestMapping("/admin/advertisement")
 public class AAdvertisementCtl {
@@ -70,11 +75,11 @@ public class AAdvertisementCtl {
 			index.setAdvRight(advertisementService.findLastByType(Advertisement.TYPE_RIGHT));
 			index.setAdvBottom(advertisementService.findLastByType(Advertisement.TYPE_BOTTOM));
 			map.put("success", true);
-			map.put("message", "保存成功");
+			map.put("msg", "保存成功");
 		} catch (Exception e) {
 			e.printStackTrace();
 			map.put("success", false);
-			map.put("message", "保存失败");
+			map.put("msg", "保存失败");
 		}
 
 		return map;

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -24,18 +25,24 @@ import fate.webapp.blog.model.Index;
 import fate.webapp.blog.model.UserSession;
 import fate.webapp.blog.service.AnnouncementService;
 
+/**
+ * 公告
+ * @author Fate
+ *
+ */
 @Controller
 @RequestMapping("/admin/announcement")
 public class AAnnouncementCtl {
 
+    private static final Logger log = Logger.getLogger(AAnnouncementCtl.class);
+    
 	@Autowired
 	private AnnouncementService announcementService;
 
 	@RequestMapping("/list")
 	public ModelAndView list(@RequestParam(defaultValue = "1") int curPage) {
 		ModelAndView mv = new ModelAndView("admin/function/announcement/list");
-		List<Announcement> list = announcementService.page(curPage,
-				Constants.ANNOUNCEMENT_PAGE_SIZE);
+		List<Announcement> list = announcementService.page(curPage, Constants.ANNOUNCEMENT_PAGE_SIZE);
 		long count = announcementService.count();
 		mv.addObject("list", list);
 		mv.addObject("curPage", curPage);
@@ -82,7 +89,7 @@ public class AAnnouncementCtl {
 			map.put("success", true);
 			map.put("msg", "保存成功");
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("公告保存失败", e);
 			map.put("success", false);
 			map.put("msg", "保存失败");
 		}
@@ -101,7 +108,7 @@ public class AAnnouncementCtl {
             map.put("success", true);
             map.put("msg", "保存成功");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("公告删除失败", e);
             map.put("success", false);
             map.put("msg", "保存失败");
         }
@@ -113,9 +120,7 @@ public class AAnnouncementCtl {
 	 */
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat(
-				"yyyy-MM-dd hh:mm:ss");// 写上你要的日期格式
-		// dateFormat.setLenient(false);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(
 				dateFormat, true));
 	}

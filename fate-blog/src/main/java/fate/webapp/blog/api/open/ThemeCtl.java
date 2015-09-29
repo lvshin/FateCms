@@ -144,6 +144,16 @@ public class ThemeCtl {
 		return flag;
 	}
 	
+	/**
+	 * 左边为新url，右边为了让搜索引擎也能访问到
+	 * @param year
+	 * @param month
+	 * @param date
+	 * @param title
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping({"/{year}/{month}/{date}/{title}.html","/op/theme/{year}/{month}/{date}/{title}.html"})
 	public ModelAndView detail(@PathVariable("year") String year, @PathVariable("month") String month,@PathVariable("date") String date, @PathVariable("title") String title, HttpServletRequest request, HttpServletResponse response){
 		String referer = request.getHeader("Referer");
@@ -176,11 +186,8 @@ public class ThemeCtl {
 			theme.setViews(theme.getViews()+1);
 		theme.setReplies(theme.getDuoShuos().size());
 		theme = themeService.update(theme, globalSetting.getRedisOpen());
-//		theme.setTags(theme.getTag s().replace(",", "|"));
 		
 		Advertisement advertisement = advertisementService.findLastByType(Advertisement.TYPE_INSIDE);
-//		System.out.println(theme.getTitle());
-//theme.setTitle("1234");		
 		
 		ThirdPartyAccess weibo = thirdPartyAccessService.findByType(ThirdPartyAccess.TYPE_XINLANG);
         mv.addObject("weibo", weibo==null?"":weibo.getAccessKey());
@@ -202,7 +209,7 @@ public class ThemeCtl {
 			UserSession userSession = (UserSession) session.getAttribute("userSession");
 			if(!(userSession.getUser().getEmailStatus()||userSession.getUser().getMobileStatus())&&userSession.getType()==0){
 				map.put("success", false);
-				map.put("message", "您的帐号处于未验证状态，请先验证您的邮箱/手机！");
+				map.put("msg", "您的帐号处于未验证状态，请先验证您的邮箱/手机！");
 				return map;
 			}
 			if(themeGuid!=null)
@@ -214,7 +221,7 @@ public class ThemeCtl {
 			}
 			else{
 				map.put("success", false);
-				map.put("message", "数据异常");
+				map.put("msg", "数据异常");
 				return map;
 			}
 			comments.setCommentContent(commentContent);
@@ -222,11 +229,11 @@ public class ThemeCtl {
 			commentsService.save(comments);
 			themeService.update(themeService.find(themeGuid, globalSetting.getRedisOpen()), globalSetting.getRedisOpen());
 			map.put("success", true);
-			map.put("message", "评论成功");
+			map.put("msg", "评论成功");
 		}catch(Exception e){
 			e.printStackTrace();
 			map.put("success", false);
-			map.put("message", "未知错误");
+			map.put("msg", "未知错误");
 		}
 		
 		return map;
@@ -243,7 +250,7 @@ public class ThemeCtl {
 			if(theme!=null){
 				if(theme.getAuthorId()!=userSession.getUser().getUid()){
 					mv.addObject("success", false);
-					mv.addObject("message", "您没有编辑该主题的权限");
+					mv.addObject("msg", "您没有编辑该主题的权限");
 					return mv;
 				}
 				forum = theme.getForum();
@@ -256,95 +263,13 @@ public class ThemeCtl {
 			forum = forumService.find(fid);
 		if(forum==null||forum.getType()==Forum.TYPE_REGION){
 			mv.addObject("success", false);
-			mv.addObject("message", "所选版块不存在");
+			mv.addObject("msg", "所选版块不存在");
 		}else{
 			mv.addObject("success", true);
 			mv.addObject("forum", forum);
 		}
 		return mv;
 	}
-	
-//	@RequestMapping("theme/updateTheme")
-//	@ResponseBody
-//	public Object addTheme(Theme theme,int state, int fid, HttpSession session) {
-//		Map<String, Object> map = new HashMap<String, Object>();
-//		try {
-//
-//			UserSession userSession = (UserSession) session
-//					.getAttribute("userSession");
-//			Forum forum = forumService.find(fid);
-//			if(forum==null){
-//				map.put("success", false);
-//				map.put("message", "版块不存在");
-//				return map;
-//			}
-//			theme.setForum(forum);
-//			theme.setAuthor(userSession.getUser().getNickName());
-//			theme.setAuthorId(userSession.getUser().getUid());
-//			theme.setState(state);
-//
-//			String tag2 = "";
-//			/* 把文章的标签存入数据库以便下次直接点击 */
-//			if (theme.getTags() != null
-//					&& !theme.getTags().trim().equals("")) {
-//				String[] tags = theme.getTags().split(",");
-//				Set<String> set = new HashSet<String>();
-//				/* 遍历标签，如果已存在则更新时间；不存在则创建 */
-//				for (String tag : tags) {
-//					if (!themeTagService.exits(tag, userSession.getUser()
-//							.getUid())) {
-//						ThemeTag themeTag = new ThemeTag();
-//						themeTag.setTagName(tag);
-//						themeTag.setLastUsed(new Date());
-//						themeTag.setUser(userSession.getUser());
-//						themeTagService.save(themeTag);
-//					} else {
-//						ThemeTag themeTag = themeTagService
-//								.findByNameAndUser(tag, userSession.getUser()
-//										.getUid());
-//						themeTag.setLastUsed(new Date());
-//						themeTagService.update(themeTag);
-//					}
-//					set.add(tag);
-//				}
-//				/* 通过Set删除重复的标签 */
-//				Iterator<String> it = set.iterator();
-//				while (it.hasNext()) {
-//					tag2 += it.next() + ",";
-//				}
-//				tag2 = tag2.substring(0, tag2.lastIndexOf(","));
-//				theme.setTags(tag2);
-//				/* 从前台传的数据相当于新建了一个文章，会覆盖旧数据，所以得从数据库中取 */
-//				if (theme.getGuid() != null && !theme.getGuid().equals("")) {
-//					Theme a = themeService.find(theme.getGuid());
-//					a.setTitle(theme.getTitle());
-//					a.setContent(theme.getContent());
-////					a.setThemeType(theme.getThemeType());
-//					a.setLastModify(new Date());
-//					a.setTags(tag2);
-//					theme = a;
-//				} 
-//				String year = DateUtils.format(theme.getPublishDate(),
-//						"yyyy");
-//				String month = DateUtils.format(theme.getPublishDate(),
-//						"MM");
-//				String day = DateUtils.format(theme.getPublishDate(),
-//						"dd");
-//				theme.setUrl("op/theme/" + year + "/" + month + "/"
-//						+ day + "/" + URLEncoder.encode(theme.getTitle(),"utf-8").replace("+", "%20") + ".html");
-//			}
-//			themeService.update(theme);
-//			map.put("success", true);
-//			map.put("message", "保存成功");
-//			map.put("url", theme.getUrl());
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			map.put("success", false);
-//			map.put("message", "保存失败");
-//		}
-//
-//		return map;
-//	}
 	
 	@RequestMapping("/op/theme/comment/vote")
 	@ResponseBody
@@ -354,7 +279,7 @@ public class ThemeCtl {
 		try{
 			if((type!=1&&type!=2)||(guid==null||guid.trim().equals(""))){
 				map.put("success", false);
-				map.put("message", "数据异常");
+				map.put("msg", "数据异常");
 				return map;
 			}
 			if(!voteRecordService.exists(session.getId(), guid, type)){
@@ -391,13 +316,13 @@ public class ThemeCtl {
 				map.put("down", down);
 			}else{
 				map.put("success", false);
-				map.put("message", "请勿重复投票");
+				map.put("msg", "请勿重复投票");
 			}
 			
 		}catch(Exception e){
 			e.printStackTrace();
 			map.put("success", false);
-			map.put("message", "未知错误");
+			map.put("msg", "未知错误");
 		}
 		return map;
 	}
