@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class CaseShowCtl {
 
-	private Logger log = Logger.getLogger(CaseShowCtl.class);
+	private static final Logger log = Logger.getLogger(CaseShowCtl.class);
 	
 	@RequestMapping("/caseshow")
 	public String caseshow(){

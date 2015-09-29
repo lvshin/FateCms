@@ -44,12 +44,6 @@ public class FileCtl {
 	// 设置每块为 200K
 	final long partSize1 = 1024 * 200;
 
-	@Value("${accessKeyId}")
-	private String accessKeyId;
-
-	@Value("${accessKeySecret}")
-	private String accessKeySecret;
-
 	// @Autowired
 	// private FileEntityService fileEntityService;
 

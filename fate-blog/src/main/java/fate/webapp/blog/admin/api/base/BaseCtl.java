@@ -4,7 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -16,12 +15,6 @@ import fate.webapp.blog.service.UserSessionService;
 @RequestMapping("/op/base")
 public class BaseCtl {
 
-	@Value("${accessKeyId}")
-	private String accessKeyId;
-	
-	@Value("${accessKeySecret}")
-	private String accessKeySecret;
-	
 	@Autowired
 	private UserSessionService userSessionService;
 	

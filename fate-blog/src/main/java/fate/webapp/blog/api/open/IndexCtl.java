@@ -32,7 +32,7 @@ import fate.webapp.blog.utils.FilterHTMLTag;
 @RequestMapping("/")
 public class IndexCtl {
 
-	private Logger log = Logger.getLogger(IndexCtl.class);
+	private static final Logger log = Logger.getLogger(IndexCtl.class);
 	
 	@Autowired
 	private ThemeService themeService;
@@ -143,6 +143,11 @@ public class IndexCtl {
 		return map;
 	}
 	
+	/**
+	 * 获取文章内容中的图片地址
+	 * @param content
+	 * @return
+	 */
 	public String getImg(String content){
 		content = content.substring(content.indexOf("<img")+4);
 		if(content.indexOf("\"")==-1)

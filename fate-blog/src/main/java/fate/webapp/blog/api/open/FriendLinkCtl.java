@@ -17,7 +17,7 @@ import fate.webapp.blog.utils.Strings;
 @RequestMapping("/friendLink")
 public class FriendLinkCtl {
 
-	private Logger log = Logger.getLogger(FriendLinkCtl.class);
+	private static final Logger log = Logger.getLogger(FriendLinkCtl.class);
 	
 	@Autowired
 	private FriendLinkService friendLinkService;

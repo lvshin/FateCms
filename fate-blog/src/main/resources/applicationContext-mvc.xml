@@ -45,7 +45,7 @@
 	<!-- 注册静态资源 -->
 	<mvc:default-servlet-handler />
 
-	<bean id="multipartResolver" class="fate.webapp.blog.resolver.MyMultipartResolver">
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<!-- 10GB -->
 		<property name="maxUploadSize" value="10737418240" />
 		<property name="uploadTempDir" value="/temp/upload" />

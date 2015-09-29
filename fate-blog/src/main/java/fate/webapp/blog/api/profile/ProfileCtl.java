@@ -76,7 +76,7 @@ import fate.webapp.blog.websocket.SystemMessageWebSocketHandler;
 @RequestMapping("/profile")
 public class ProfileCtl {
 
-	private Logger log = Logger.getLogger(ProfileCtl.class);
+	private static final Logger log = Logger.getLogger(ProfileCtl.class);
 
 	@Autowired
 	private UserService userService;
@@ -117,10 +117,9 @@ public class ProfileCtl {
 	@ResponseBody
 	public Object updateBasicInfo(User u, int headIcon, HttpSession session) {
 		Map<String, Object> map = new HashMap<String, Object>();
+		UserSession userSession = (UserSession) session.getAttribute("userSession");
+        User user = userSession.getUser();
 		try {
-			UserSession userSession = (UserSession) session
-					.getAttribute("userSession");
-			User user = userSession.getUser();
 			user.setAddress(u.getAddress());
 			user.setHeadIconUsed(headIcon);
 			if (headIcon != 0) {
@@ -140,7 +139,7 @@ public class ProfileCtl {
 			map.put("success", true);
 			map.put("message", "保存成功");
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("更新个人信息失败，用户ID："+user.getUid());
 			map.put("success", false);
 			map.put("message", "未知错误");
 		}
@@ -158,69 +157,55 @@ public class ProfileCtl {
 	@ResponseBody
 	public Object uploadImg(@RequestParam("img") MultipartFile uploadFile,
 			HttpServletRequest request) {
-		System.out.println("头像上传");
+		log.info("头像上传");
 		String dir = "headIcon";
 		Map<String, Object> map = new HashMap<String, Object>();
-		try {
-			String filename = uploadFile.getOriginalFilename();// 获取文件名
-			String type = filename.substring(filename.lastIndexOf("."));
-			if (!(type.equals(".jpg") || type.equals(".jpeg")
-					|| type.equals(".png") || type.equals(".gif"))) {
-				map.put("status", "error");
-				map.put("message", "图片格式错误");
-				return map;
-			}
-			ServletContext context = request.getServletContext();
-			String relpath = context.getRealPath("/").substring(0,
-					context.getRealPath("/").indexOf(File.separator))
-					+ File.separator;
-			System.out.println("真实路径:" + relpath);// 真实路径
-			long cur = System.currentTimeMillis();
-			String uppath = "download" + File.separator + dir + File.separator
-					+ cur + type;
-			boolean flag = true;
-			File dirs = new File(relpath + "download" + File.separator + dir);
-			System.out.println("文件夹存在："+relpath + "download" + File.separator + dir);
-			// 如果目录不存在，则创建目录
-			if (!dirs.exists()) {
-				flag = dirs.mkdirs();
-				System.out.println("1:"+flag);
-			}
-
-			File newFile = new File(relpath + uppath);
-			while (newFile.exists()) {
-				filename = filename.replace(".", "(1).");
-				newFile = new File(relpath + "download" + File.separator + dir
-						+ File.separator + filename);
-			}
-			if (flag) {
-				// data = "[{ret:2},{file:'"+uppath+"'}]";
-				try {
-					uploadFile.transferTo(newFile);
-					BufferedImage bi = ImageIO.read(newFile);
-
-					map.put("url", request.getContextPath()
-							+ "/profile/getfile/" + dir + "/" + cur + "."
-							+ filename.substring(filename.lastIndexOf(".") + 1));
-					map.put("status", "success");
-					System.out.println(bi.getWidth() + "," + bi.getHeight());
-					map.put("width", bi.getWidth());
-					map.put("height", bi.getHeight());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					map.put("status", "error");
-					map.put("message", "系统内部错误");
-				}
-
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		String filename = uploadFile.getOriginalFilename();// 获取文件名
+		String type = filename.substring(filename.lastIndexOf("."));
+		if (!(type.equals(".jpg") || type.equals(".jpeg") || type.equals(".png") || type.equals(".gif"))) {
 			map.put("status", "error");
-			map.put("message", "文件上传错误");
+			map.put("message", "图片格式错误");
+			return map;
+		}
+		ServletContext context = request.getServletContext();
+		String relpath = context.getRealPath("/").substring(0,
+				context.getRealPath("/").indexOf(File.separator))
+				+ File.separator;
+		long cur = System.currentTimeMillis();
+		String uppath = "download" + File.separator + dir + File.separator + cur + type;
+		boolean flag = true;
+		File dirs = new File(relpath + "download" + File.separator + dir);
+		// 如果目录不存在，则创建目录
+		if (!dirs.exists()) {
+			flag = dirs.mkdirs();
+		}
+
+		File newFile = new File(relpath + uppath);
+		while (newFile.exists()) {
+			filename = filename.replace(".", "(1).");
+			newFile = new File(relpath + "download" + File.separator + dir
+					+ File.separator + filename);
+		}
+		if (flag) {
+			try {
+				uploadFile.transferTo(newFile);
+				BufferedImage bi = ImageIO.read(newFile);
+
+				map.put("url", request.getContextPath()
+						+ "/profile/getfile/" + dir + "/" + cur + "."
+						+ filename.substring(filename.lastIndexOf(".") + 1));
+				map.put("status", "success");
+				map.put("width", bi.getWidth());
+				map.put("height", bi.getHeight());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				log.error("头像文件写入失败");
+				map.put("status", "error");
+				map.put("message", "系统内部错误");
+			}
+
 		}
 		return map;
-
 	}
 
 	@RequestMapping("/cropImg")
@@ -230,11 +215,8 @@ public class ProfileCtl {
 			double imgY1, double imgX1, double cropH, double cropW) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		ServletContext context = request.getServletContext();
-		System.out.println(imgW + "," + imgH + "," + imgInitW + "," + imgInitH
-				+ "," + imgX1 + "," + imgY1 + "," + cropW + "," + cropH);
 		try {
 			String fileName = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
-			System.out.println(context.getRealPath("/"));
 			String relpath = context.getRealPath("/").substring(0,
 					context.getRealPath("/").indexOf(File.separator))
 					+ File.separator;
@@ -242,15 +224,11 @@ public class ProfileCtl {
 					+ File.separator + fileName;
 			String filePath = relpath + uppath;
 			File oraginal = new File(filePath);
-			System.out.println(oraginal.getCanonicalPath());
 			File tmp = new File(filePath + "tmp");
-			System.out.println(tmp.getCanonicalPath());
 			File file = new File(filePath.replace(".", "1."));
 			ImageUtils.resize(oraginal, tmp, (int) imgW, (int) imgH, 1.0f);
-			System.out.println(111);
 			ImageUtils.cut(tmp, file, (int) imgX1, (int) imgY1, (int) cropW,
 					(int) cropH);
-			System.out.println("delete");
 			oraginal.delete();
 			tmp.delete();
 			HttpSession session = request.getSession(false);
@@ -261,24 +239,14 @@ public class ProfileCtl {
 			ossService.headIconUpload(ossBucket.getTextValue(),
 					file, "user/headIcon/", key);
 			String url = imgUrl.replace(".", "1.");
-			// String url = "http://"
-			// + (ossSetting.getUrl() == null ? ossSetting.getBucket()
-			// + "." + ossSetting.getEndpoint() : ossSetting
-			// .getUrl()) + "/user/headIcon/" + key;
-			// file.delete();
+			
 			map.put("status", "success");
 			map.put("url", url);
-		} catch (IOException e) {
-			map.put("status", "error");
-			map.put("message", "文件切割异常");
-			log.error("文件切割异常:", e);
-			System.out.println("文件切割异常");
 		} catch (Exception e) {
 			e.printStackTrace();
 			map.put("status", "error");
 			map.put("message", "文件切割异常");
-			log.error("其他异常:", e);
-			System.out.println("其他异常");
+			log.error("文件切割异常:", e);
 		}
 		return map;
 	}
@@ -357,7 +325,6 @@ public class ProfileCtl {
 			User user = userSession.getUser();
 			String fileName = url.substring(url.lastIndexOf("/") + 1);
 			ServletContext context = request.getServletContext();
-			System.out.println(context.getRealPath("/"));
 			String relpath = context.getRealPath("/").substring(0,
 					context.getRealPath("/").indexOf(File.separator))
 					+ File.separator;
@@ -384,6 +351,7 @@ public class ProfileCtl {
 			userService.update(user);
 			map.put("success", true);
 		} catch (Exception e) {
+		    log.error("更新头像失败", e);
 			map.put("success", false);
 			map.put("message", "未知错误");
 		}
@@ -437,7 +405,7 @@ public class ProfileCtl {
 			}
 			map.put("success", true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("手机验证失败", e);
 			map.put("success", false);
 			map.put("message", "未知错误");
 		}
@@ -461,7 +429,7 @@ public class ProfileCtl {
 			sendEmail(email, userSession.getUser());
 			map.put("success", true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("邮件发送失败", e);
 			map.put("success", false);
 			map.put("message", "未知错误");
 		}
@@ -542,9 +510,7 @@ public class ProfileCtl {
 									+ "</p>" + "</div>" + "</body>" + "</html>",
 							true);
 			setting.getJavaMailSender().send(mailMessage);
-		} else {
-
-		}
+		} 
 	}
 
 	@RequestMapping("/thirdParty")
@@ -617,7 +583,6 @@ public class ProfileCtl {
 				// 利用获取到的accessToken 去获取当前用户的openid --------- end
 				// 为空代表首次登录，此处获取的信息尚未完全
 				ThirdPartyAccount tpa = tpaService.findByOpenId(openID);
-				System.out.println(accessToken);
 				if (tpa == null) {
 					// 获取用户QQ空间的信息
 					UserInfo qzoneUserInfo = new UserInfo(accessToken, openID);
