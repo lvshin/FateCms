@@ -14,7 +14,12 @@ import com.google.gson.Gson;
 
 public class ClientInfo {
 
-	/**
+	private ClientInfo() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+    /**
 	 * 获取用户的IP
 	 * @param request
 	 * @return

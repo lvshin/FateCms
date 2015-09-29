@@ -7,7 +7,12 @@ import java.util.Date;
 
 public class EncryptUtil {
 
-	// md5加密  
+	private EncryptUtil() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+    // md5加密  
     public static String md5(String inputText) {  
         return encrypt(inputText, "md5");  
     }  

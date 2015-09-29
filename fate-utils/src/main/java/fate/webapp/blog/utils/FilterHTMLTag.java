@@ -5,7 +5,12 @@ import java.util.regex.Pattern;
 
 public class FilterHTMLTag{
 
-	/**
+	private FilterHTMLTag() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+    /**
 	 * 去掉所有的HTML标签和空白符号
 	 * 
 	 * @param htmlStr

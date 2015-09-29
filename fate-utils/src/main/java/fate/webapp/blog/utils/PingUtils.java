@@ -26,20 +26,12 @@ public class PingUtils {
 	// "http://ping.blog.qikoo.com/rpc2.php",
 	"http://ping.baidu.com/ping/RPC2" };
 
-//	public static void main(String[] args) {
-//		try {
-//			System.out.println(ping("http://ping.baidu.com/ping/RPC2", "123",
-//					"http://123.com", "http://123.com/123", null));
-//		} catch (IllegalStateException | IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (DocumentException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
+	private PingUtils() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-	/**
+    /**
 	 * 生成ping包
 	 * 
 	 * @param title

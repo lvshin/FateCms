@@ -28,7 +28,12 @@ public class QRUtil {
     // LOGO高度  
     private static final int HEIGHT = 40;  
 
-	public static BufferedImage toBufferedImage(BitMatrix matrix, String logo) {
+	private QRUtil() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+    public static BufferedImage toBufferedImage(BitMatrix matrix, String logo) {
 		int width = matrix.getWidth();
 		int height = matrix.getHeight();
 		BufferedImage image = new BufferedImage(width, height,

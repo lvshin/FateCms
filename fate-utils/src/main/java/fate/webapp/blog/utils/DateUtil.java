@@ -14,7 +14,12 @@ import java.util.SimpleTimeZone;
  */
 public class DateUtil {
 
- // RFC 822 Date Format
+    private DateUtil() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+    // RFC 822 Date Format
     private static final String RFC822_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss z";
 
     // ISO 8601 format

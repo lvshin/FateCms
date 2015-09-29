@@ -2,9 +2,19 @@ package fate.webapp.blog.utils;
 
 import java.text.DecimalFormat;
 
+/**
+ * 字节数转容易理解的大小
+ * @author Fate
+ *
+ */
 public class Convert {
 
-	public static String sizeConvert(long size){
+	private Convert() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+    public static String sizeConvert(long size){
 		DecimalFormat df = new DecimalFormat("#.##");
 		if(size<1024)
 			return size+"字节";

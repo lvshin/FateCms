@@ -7,7 +7,13 @@ package fate.webapp.blog.utils;
  * 
  */
 public class CheckFileType {
-	/**
+    
+	private CheckFileType() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+    /**
 	 * 检测文件是否为图片
 	 * 
 	 * @param filename

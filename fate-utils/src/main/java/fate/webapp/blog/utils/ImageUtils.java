@@ -23,6 +23,8 @@ import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 
+import org.apache.log4j.Logger;
+
 import com.mortennobel.imagescaling.ResampleOp;
 
 /**
@@ -33,62 +35,24 @@ import com.mortennobel.imagescaling.ResampleOp;
  */
 public class ImageUtils {
 
+    private static final Logger log = Logger.getLogger(ImageUtils.class);
+    
 	/**
 	 * 几种常见的图片格式
 	 */
-	public static String IMAGE_TYPE_GIF = "gif";// 图形交换格式
-	public static String IMAGE_TYPE_JPG = "jpg";// 联合照片专家组
-	public static String IMAGE_TYPE_JPEG = "jpeg";// 联合照片专家组
-	public static String IMAGE_TYPE_BMP = "bmp";// 英文Bitmap（位图）的简写，它是Windows操作系统中的标准图像文件格式
-	public static String IMAGE_TYPE_PNG = "png";// 可移植网络图形
-	public static String IMAGE_TYPE_PSD = "psd";// Photoshop的专用格式Photoshop
+	public static final String IMAGE_TYPE_GIF = "gif";// 图形交换格式
+	public static final String IMAGE_TYPE_JPG = "jpg";// 联合照片专家组
+	public static final String IMAGE_TYPE_JPEG = "jpeg";// 联合照片专家组
+	public static final String IMAGE_TYPE_BMP = "bmp";// 英文Bitmap（位图）的简写，它是Windows操作系统中的标准图像文件格式
+	public static final String IMAGE_TYPE_PNG = "png";// 可移植网络图形
+	public static final String IMAGE_TYPE_PSD = "psd";// Photoshop的专用格式Photoshop
 
-	// /**
-	// * 程序入口：用于测试
-	// * @param args
-	// */
-	// public static void main(String[] args) {
-	// // 1-缩放图像：
-	// // 方法一：按比例缩放
-	// ImageUtils.scale("e:/abc.jpg", "e:/abc_scale.jpg", 2, true);//测试OK
-	// // 方法二：按高度和宽度缩放
-	// ImageUtils.scale2("e:/abc.jpg", "e:/abc_scale2.jpg", 500, 300,
-	// true);//测试OK
-	//
-	//
-	// // 2-切割图像：
-	// // 方法一：按指定起点坐标和宽高切割
-	// ImageUtils.cut("e:/abc.jpg", "e:/abc_cut.jpg", 0, 0, 400, 400 );//测试OK
-	// // 方法二：指定切片的行数和列数
-	// ImageUtils.cut2("e:/abc.jpg", "e:/", 2, 2 );//测试OK
-	// // 方法三：指定切片的宽度和高度
-	// ImageUtils.cut3("e:/abc.jpg", "e:/", 300, 300 );//测试OK
-	//
-	//
-	// // 3-图像类型转换：
-	// ImageUtils.convert("e:/abc.jpg", "GIF", "e:/abc_convert.gif");//测试OK
-	//
-	//
-	// // 4-彩色转黑白：
-	// ImageUtils.gray("e:/abc.jpg", "e:/abc_gray.jpg");//测试OK
-	//
-	//
-	// // 5-给图片添加文字水印：
-	// // 方法一：
-	// ImageUtils.pressText("我是水印文字","e:/abc.jpg","e:/abc_pressText.jpg","宋体",Font.BOLD,Color.white,80,
-	// 0, 0, 0.5f);//测试OK
-	// // 方法二：
-	// ImageUtils.pressText2("我也是水印文字", "e:/abc.jpg","e:/abc_pressText2.jpg",
-	// "黑体", 36, Color.white, 80, 0, 0, 0.5f);//测试OK
-	//
-	// // 6-给图片添加图片水印：
-	// ImageUtils.pressImage("e:/abc2.jpg",
-	// "e:/abc.jpg","e:/abc_pressImage.jpg", 0, 0, 0.5f);//测试OK
-	// }
+	private ImageUtils() {
+        super();
+    }
 
-	public static void resize(File originalFile, File resizedFile,
+    public static void resize(File originalFile, File resizedFile,
 			int newWidth, int newHeight, float quality) {
-
 		try {
 			BufferedImage inputBufImage = ImageIO.read(originalFile);
 			ResampleOp resampleOp = new ResampleOp(newWidth, newHeight);// 转换
@@ -96,7 +60,7 @@ public class ImageUtils {
 					null);
 			ImageIO.write(rescaledTomato, IMAGE_TYPE_PNG, resizedFile);
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("图片操作失败", e);
 		}
 	}
 
@@ -117,17 +81,14 @@ public class ImageUtils {
 	 *            目标切片高度
 	 * @throws IOException
 	 */
-	public final static void cut(File srcImageFile, File result, int x, int y,
+	public static void cut(File srcImageFile, File result, int x, int y,
 			int width, int height) {
 		ImageInputStream iis = null;
 		try {
 
 			iis = ImageIO.createImageInputStream(srcImageFile);
-
 			Iterator<ImageReader> iterator = ImageIO.getImageReaders(iis);
-
 			ImageReader reader = (ImageReader) iterator.next();
-
 			reader.setInput(iis, true);
 			ImageReadParam param = reader.getDefaultReadParam();
 			Rectangle rectangle = new Rectangle(x, y, width, height);
@@ -135,14 +96,13 @@ public class ImageUtils {
 			BufferedImage bi = reader.read(0, param);
 			ImageIO.write(bi, IMAGE_TYPE_PNG, result);
 		} catch (Exception e) {
-			e.printStackTrace();
+		    log.error("图片操作失败", e);
 		} finally {
 			if (iis != null) {
 				try {
 					iis.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				    log.error("文件关闭失败", e);
 				}
 			}
 		}
@@ -160,7 +120,7 @@ public class ImageUtils {
 	 * @param destHeight
 	 *            目标切片高度。默认150
 	 */
-	public final static void cut(String srcImageFile, String descDir,
+	public static void cut(String srcImageFile, String descDir,
 			int destWidth, int destHeight) {
 		try {
 			if (destWidth <= 0)
@@ -189,12 +149,10 @@ public class ImageUtils {
 				} else {
 					rows = (int) Math.floor(srcHeight / destHeight) + 1;
 				}
-				// 循环建立切片
-				// 改进的想法:是否可用多线程加快切割速度
+				// 循环建立切片，改进的想法:是否可用多线程加快切割速度
 				for (int i = 0; i < rows; i++) {
 					for (int j = 0; j < cols; j++) {
-						// 四个参数分别为图像起点坐标和宽高
-						// 即: CropImageFilter(int x,int y,int width,int height)
+						// 四个参数分别为图像起点坐标和宽高，即: CropImageFilter(int x,int y,int width,int height)
 						cropFilter = new CropImageFilter(j * destWidth, i
 								* destHeight, destWidth, destHeight);
 						img = Toolkit.getDefaultToolkit().createImage(
@@ -212,7 +170,7 @@ public class ImageUtils {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+		    log.error("图片操作失败", e);
 		}
 	}
 
@@ -226,7 +184,7 @@ public class ImageUtils {
 	 * @param destImageFile
 	 *            目标图像地址
 	 */
-	public final static void convert(String srcImageFile, String formatName,
+	public static void convert(String srcImageFile, String formatName,
 			String destImageFile) {
 		try {
 			File f = new File(srcImageFile);
@@ -235,7 +193,7 @@ public class ImageUtils {
 			BufferedImage src = ImageIO.read(f);
 			ImageIO.write(src, formatName, new File(destImageFile));
 		} catch (Exception e) {
-			e.printStackTrace();
+		    log.error("图片操作失败", e);
 		}
 	}
 
@@ -247,7 +205,7 @@ public class ImageUtils {
 	 * @param destImageFile
 	 *            目标图像地址
 	 */
-	public final static void gray(String srcImageFile, String destImageFile) {
+	public static void gray(String srcImageFile, String destImageFile) {
 		try {
 			BufferedImage src = ImageIO.read(new File(srcImageFile));
 			ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
@@ -255,7 +213,7 @@ public class ImageUtils {
 			src = op.filter(src, null);
 			ImageIO.write(src, "JPEG", new File(destImageFile));
 		} catch (IOException e) {
-			e.printStackTrace();
+		    log.error("图片操作失败", e);
 		}
 	}
 
@@ -318,7 +276,7 @@ public class ImageUtils {
 			g.dispose();
 			ImageIO.write(bufferedImage, IMAGE_TYPE_JPG, file);
 		} catch (Exception e) {
-			e.printStackTrace();
+		    log.error("图片操作失败", e);
 		}
 	}
 
@@ -336,7 +294,7 @@ public class ImageUtils {
 	 * @param alpha
 	 *            透明度(0.0 -- 1.0, 0.0为完全透明，1.0为完全不透明)
 	 */
-	public final static void pressImage(String targetImg, String waterImg,
+	public static void pressImage(String targetImg, String waterImg,
 			int x, int y, float alpha) {
 		try {
 			File file = new File(targetImg);
@@ -370,7 +328,7 @@ public class ImageUtils {
 			g.dispose();
 			ImageIO.write(bufferedImage, IMAGE_TYPE_JPG, file);
 		} catch (IOException e) {
-			e.printStackTrace();
+		    log.error("图片操作失败", e);
 		}
 	}
 

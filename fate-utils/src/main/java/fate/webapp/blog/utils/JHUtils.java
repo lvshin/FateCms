@@ -18,7 +18,12 @@ import org.json.JSONObject;
  */
 public class JHUtils {
 
-	/**
+	private JHUtils() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+    /**
 	 * 短信发送
 	 * 
 	 * @param mobile

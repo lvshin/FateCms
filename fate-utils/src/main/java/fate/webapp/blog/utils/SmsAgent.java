@@ -12,7 +12,12 @@ import org.json.JSONObject;
  */
 public class SmsAgent {
 
-	public static Map<String, Object> sendSms(String mobiles,String code,int timeout) {
+	private SmsAgent() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+    public static Map<String, Object> sendSms(String mobiles,String code,int timeout) {
 
 		Map<String, String> para = new HashMap<String, String>();
 		

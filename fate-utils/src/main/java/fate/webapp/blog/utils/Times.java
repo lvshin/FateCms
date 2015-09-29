@@ -11,7 +11,12 @@ import java.util.regex.Pattern;
 
 public class Times {
 
-	/**
+	private Times() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+    /**
      * 判断一年是否为闰年，如果给定年份小于1全部为 false
      * 
      * @param year

@@ -15,7 +15,12 @@ import org.jsoup.select.Elements;
 
 public class FriendLinkUtil {
 
-	private static Logger log = Logger.getLogger(FriendLinkUtil.class.getName());
+	private FriendLinkUtil() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+    private static Logger log = Logger.getLogger(FriendLinkUtil.class.getName());
 	
 	/**
 	 * 检测网站的友链是否互链

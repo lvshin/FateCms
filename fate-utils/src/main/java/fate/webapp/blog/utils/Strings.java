@@ -9,7 +9,12 @@ import java.util.regex.Pattern;
 
 public class Strings {
 
-	/**
+	private Strings() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+    /**
      * 是中文字符吗?
      * 
      * @param c

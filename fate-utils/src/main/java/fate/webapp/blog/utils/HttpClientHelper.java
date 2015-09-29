@@ -16,7 +16,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpClientHelper {
-	static {
+    
+	private HttpClientHelper() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+    static {
 		System.setProperty("java.net.useSystemProxies", "true");
 	}
 
