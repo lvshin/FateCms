@@ -92,7 +92,7 @@
 						</div>
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-9">
-								<button type="submit" class="btn btn-default" >保存</button>
+								<button type="submit" class="btn btn-default" id="submitBtn">保存</button>
 							</div>
 						</div>
 					</form>
@@ -109,6 +109,7 @@
 <script src="http://open.reinforce.cn/Validform/js/Validform_v5.3.2_min.js"></script>
 <script type="text/javascript">
 	function submitForm() {
+		$("#submitBtn").button('loading');
 			var options = {
 				url : "install/update",
 				type : 'post',
@@ -117,12 +118,11 @@
 					password : $.md5($("#password").val())
 				},
 				success : function(data) {
-					console.log(data);
 					if (data.success) {
 						
 					var d = dialog({
 						title : '提示',
-						content : "保存成功",
+						content : "站点创建成功",
 						width : '200px',
 						okValue : '确定',
 						ok : function() {
@@ -130,8 +130,11 @@
 						}
 					});
 					d.showModal();
-				} else
+				} else{
+					$("#submitBtn").button('reset');
 					dialog.alert(data.msg);
+				}
+					
 			},
 			error : function(data) {
 				console.log(data);

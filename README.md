@@ -12,7 +12,7 @@ FateCMS
 
 1.试用前，请先安装jdk1.8和tomcat8
 
-2.这里贴出的是源码，试用请下载war包
+2.这里贴出的是源码，试用请下载war包,http://open.reinforce.cn/FateCms.7z
 
 3.将ROOT.war解压到tomcat中的webapps文件夹下（里面原来的文件全删了），找到ROOT-->WEB-INFO-->classes-->datasource.properties标准配置，配置好数据库，删掉文件名中的最后四个字
 
