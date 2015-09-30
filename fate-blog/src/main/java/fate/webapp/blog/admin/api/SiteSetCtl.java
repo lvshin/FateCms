@@ -18,6 +18,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,28 +28,25 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import fate.webapp.blog.base.Constants;
-import fate.webapp.blog.model.ExceptionLog;
 import fate.webapp.blog.model.GlobalSetting;
 import fate.webapp.blog.model.Index;
 import fate.webapp.blog.model.Navi;
 import fate.webapp.blog.model.Param;
-import fate.webapp.blog.model.Spider;
 import fate.webapp.blog.model.ThirdPartyAccess;
-import fate.webapp.blog.service.ExceptionLogService;
 import fate.webapp.blog.service.NaviService;
 import fate.webapp.blog.service.ParamService;
-import fate.webapp.blog.service.SpiderService;
 import fate.webapp.blog.service.ThirdPartyAccessService;
 
 @Controller
 @RequestMapping("/admin/siteSet")
 public class SiteSetCtl {
 
+    private static final Logger LOG = Logger.getLogger(SiteSetCtl.class);
+    
 	@Autowired
 	private ThirdPartyAccessService thirdPartyAccessService;
 	
@@ -96,10 +94,11 @@ public class SiteSetCtl {
 			updateParam(Constants.STATISTICSHEAD, statisticsHead, Param.TYPE_TEXT);
 			updateParam(Constants.REDIS_OPEN, redisOpen?1:0, Param.TYPE_INT);
 			map.put("success", true);
-			map.put("msg", "设置保存成功");
+			map.put("msg", Constants.UPDATE_SET_SUCCESS);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error(Constants.UPDATE_SET_FAIL, e);
 			map.put("success", false);
+			map.put("msg", Constants.UPDATE_SET_FAIL);
 		}
 		return map;
 	}
@@ -141,10 +140,11 @@ public class SiteSetCtl {
 			updateParam(Constants.REG_ALLOW, on?1:0, Param.TYPE_INT);
 			updateParam(Constants.NEED_EMAIL_VERIFY, emailOn?1:0, Param.TYPE_INT);
 			map.put("success", true);
-			map.put("msg", "设置保存成功");
+			map.put("msg", Constants.UPDATE_SET_SUCCESS);
 		} catch (Exception e) {
-			e.printStackTrace();
-			map.put("success", false);
+		    LOG.error(Constants.UPDATE_SET_FAIL, e);
+            map.put("success", false);
+            map.put("msg", Constants.UPDATE_SET_FAIL);
 		}
 		return map;
 	}
@@ -157,27 +157,23 @@ public class SiteSetCtl {
 	@RequestMapping("/mail")
 	public ModelAndView mail(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView("admin/siteSet/mail");
-//		Properties prop = new Properties();
-		try {
-			Param smtp_server = paramService.findByKey(Constants.SMTP_SERVER);
-			Param smtp_from = paramService.findByKey(Constants.SMTP_FROM);
-			Param smtp_username = paramService.findByKey(Constants.SMTP_USERNAME);
-			Param smtp_password = paramService.findByKey(Constants.SMTP_PASSWORD);
-			Param smtp_timeout = paramService.findByKey(Constants.SMTP_TIMEOUT);
-			String from = smtp_from==null?"":smtp_from.getTextValue();
-			String host = smtp_server==null?"":smtp_server.getTextValue();
-			String password = smtp_password==null?"":smtp_password.getTextValue();
-			// String auth = prop.getProperty( "mail.smtp.auth" ).trim();
-			String timeout = smtp_timeout==null?"":smtp_timeout.getTextValue();
-			String username = smtp_username==null?"":smtp_username.getTextValue();
-			mv.addObject("from", from);
-			mv.addObject("host", host);
-			mv.addObject("password", password);
-			mv.addObject("timeout", timeout);
-			mv.addObject("username", username);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        // Properties prop = new Properties();
+        Param smtp_server = paramService.findByKey(Constants.SMTP_SERVER);
+        Param smtp_from = paramService.findByKey(Constants.SMTP_FROM);
+        Param smtp_username = paramService.findByKey(Constants.SMTP_USERNAME);
+        Param smtp_password = paramService.findByKey(Constants.SMTP_PASSWORD);
+        Param smtp_timeout = paramService.findByKey(Constants.SMTP_TIMEOUT);
+        String from = smtp_from == null ? "" : smtp_from.getTextValue();
+        String host = smtp_server == null ? "" : smtp_server.getTextValue();
+        String password = smtp_password == null ? "" : smtp_password.getTextValue();
+        // String auth = prop.getProperty( "mail.smtp.auth" ).trim();
+        String timeout = smtp_timeout == null ? "" : smtp_timeout.getTextValue();
+        String username = smtp_username == null ? "" : smtp_username.getTextValue();
+        mv.addObject("from", from);
+        mv.addObject("host", host);
+        mv.addObject("password", password);
+        mv.addObject("timeout", timeout);
+        mv.addObject("username", username);
 		return mv;
 	}
 
@@ -242,13 +238,13 @@ public class SiteSetCtl {
 			siteSet.setJavaMailSender(javaMailSender);
 			siteSet.setSmtpFrom(smtp_from.getTextValue());
 			map.put("success", true);
-			map.put("msg", "设置保存成功");
+			map.put("msg", Constants.UPDATE_SET_SUCCESS);
 //			map.put("success", false);
 //			map.put("msg", "木有改动");
 		} catch (Exception e) {
-			e.printStackTrace();
-			map.put("success", false);
-			map.put("msg", "设置保存失败");
+		    LOG.error(Constants.UPDATE_SET_FAIL, e);
+            map.put("success", false);
+            map.put("msg", Constants.UPDATE_SET_FAIL);
 		}
 		return map;
 	}
@@ -291,13 +287,14 @@ public class SiteSetCtl {
 			map.put("success", true);
 			map.put("msg", "发送成功");
 		}catch(AuthenticationFailedException e){
-			e.printStackTrace();
+		    LOG.error("SMTP授权失败", e);
 			map.put("msg", "SMTP授权失败");
 			map.put("success", false);
 		}
 		catch (MessagingException e) {
-			e.printStackTrace();
+		    LOG.error("邮件发送失败失败", e);
 			map.put("success", false);
+			map.put("msg", "邮件发送失败");
 		}
 		return map;
 	} 
@@ -323,10 +320,11 @@ public class SiteSetCtl {
 			updateParam(Constants.GEETEST_ID, geetestId, Param.TYPE_TEXT);
 			updateParam(Constants.GEETEST_KEY, geetestKey, Param.TYPE_TEXT);
 			map.put("success", true);
-			map.put("msg", "设置保存成功");
+			map.put("msg", Constants.UPDATE_SET_SUCCESS);
 		} catch (Exception e) {
-			e.printStackTrace();
-			map.put("success", false);
+		    LOG.error(Constants.UPDATE_SET_FAIL, e);
+            map.put("success", false);
+            map.put("msg", Constants.UPDATE_SET_FAIL);
 		}
 		return map;
 	}
@@ -375,11 +373,12 @@ public class SiteSetCtl {
 			prop.store(os, "更新QQ互联设置");
 			os.close();
 			map.put("success", true);
-			map.put("msg", "设置保存成功");
+			map.put("msg", Constants.UPDATE_SET_SUCCESS);
 			in.close();
 		} catch (Exception e) {
-			e.printStackTrace();
-			map.put("success", false);
+		    LOG.error(Constants.UPDATE_SET_FAIL, e);
+            map.put("success", false);
+            map.put("msg", Constants.UPDATE_SET_FAIL);
 		}
 		return map;
 	}
@@ -416,10 +415,11 @@ public class SiteSetCtl {
 				thirdPartyAccessService.update(xinlang);
 			}
 			map.put("success", true);
-			map.put("msg", "设置保存成功");
+			map.put("msg", Constants.UPDATE_SET_SUCCESS);
 		} catch (Exception e) {
-			e.printStackTrace();
-			map.put("success", false);
+		    LOG.error(Constants.UPDATE_SET_FAIL, e);
+            map.put("success", false);
+            map.put("msg", Constants.UPDATE_SET_FAIL);
 		}
 		return map;
 	}
@@ -474,11 +474,11 @@ public class SiteSetCtl {
 			index.setKeywords(keywords!=null?k.getTextValue():"");
 			index.setDescription(description!=null?d.getTextValue():"");
 			map.put("success", true);
-			map.put("msg", "设置保存成功");
+			map.put("msg", Constants.UPDATE_SET_SUCCESS);
 		} catch (Exception e) {
-			e.printStackTrace();
-			map.put("success", false);
-			map.put("msg", "未知错误");
+		    LOG.error(Constants.UPDATE_SET_FAIL, e);
+            map.put("success", false);
+            map.put("msg", Constants.UPDATE_SET_FAIL);
 		}
 		return map;
 	}
@@ -546,9 +546,9 @@ public class SiteSetCtl {
 			autoUpdateNavi();
 			map.put("success", true);
 		} catch (JSONException e) {
-			e.printStackTrace();
-			map.put("success", false);
-			map.put("msg", "未知错误");
+		    LOG.error(Constants.UPDATE_SET_FAIL, e);
+            map.put("success", false);
+            map.put("msg", Constants.UPDATE_SET_FAIL);
 		}
 		return map;
 	}
@@ -562,9 +562,8 @@ public class SiteSetCtl {
 			autoUpdateNavi();
 			map.put("success", true);
 		} catch (Exception e) {
-			e.printStackTrace();
-			map.put("success", false);
-			map.put("msg", "未知错误");
+		    LOG.error("删除导航失败", e);
+            map.put("success", false);
 		}
 		return map;
 	}
@@ -596,10 +595,11 @@ public class SiteSetCtl {
     	    updateParam(Constants.DUOSHUO_KEY, duoshuoKey, Param.TYPE_TEXT);
     	    updateParam(Constants.DUOSHUO_SECRET, duoshuoSecret, Param.TYPE_TEXT);
     	    map.put("success", true);
-            map.put("msg", "设置保存成功");
+            map.put("msg", Constants.UPDATE_SET_SUCCESS);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(Constants.UPDATE_SET_FAIL, e);
             map.put("success", false);
+            map.put("msg", Constants.UPDATE_SET_FAIL);
         }
         return map;
 	}
@@ -623,10 +623,11 @@ public class SiteSetCtl {
             globalSetting.setTxAppKey(txAppKey);
             updateParam(Constants.TX_APP_KEY, txAppKey, Param.TYPE_TEXT);
             map.put("success", true);
-            map.put("msg", "设置保存成功");
+            map.put("msg", Constants.UPDATE_SET_SUCCESS);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(Constants.UPDATE_SET_FAIL, e);
             map.put("success", false);
+            map.put("msg", Constants.UPDATE_SET_FAIL);
         }
         return map;
     }

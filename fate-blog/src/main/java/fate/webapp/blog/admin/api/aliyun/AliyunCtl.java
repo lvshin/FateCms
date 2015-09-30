@@ -49,7 +49,7 @@ import fate.webapp.blog.utils.Strings;
 @RequestMapping("/admin/aliyun")
 public class AliyunCtl {
 
-    private static final Logger log = Logger.getLogger(AliyunCtl.class);
+    private static final Logger LOG = Logger.getLogger(AliyunCtl.class);
     
     @Autowired
     private ParamService paramService;
@@ -87,7 +87,7 @@ public class AliyunCtl {
 
         Param ossUrl = paramService.findByKey(Constants.OSS_URL);
         if (ossBucket != null && ossBucket.getTextValue() != null
-                && !ossBucket.getTextValue().equals("")) {
+                && !"".equals(ossBucket.getTextValue())) {
             List<Bucket> buckets = ossService.listBuckets();
             mv.addObject("buckets", buckets);
             mv.addObject("ossEndpoint", ossEndpoint.getTextValue());
@@ -117,7 +117,7 @@ public class AliyunCtl {
         Param openSearchAppName = paramService.findByKey(Constants.OPENSEARCH_APPNAME);
 
         if (openSearchAppName != null && openSearchAppName.getTextValue() != null
-                && !openSearchAppName.getTextValue().equals("")) {
+                && !"".equals(openSearchAppName.getTextValue())) {
             mv.addObject("openSearchAppName", openSearchAppName.getTextValue());
             mv.addObject("openSearchEndpoint", openSearchEndpoint.getTextValue());
 
@@ -167,13 +167,12 @@ public class AliyunCtl {
             paccessKeySecret.setTextValue(accessKeySecret);
             paramService.update(paccessKeySecret);
 
-            Aliyun aliyun = Aliyun.getInstance();
             aliyun.init(accessKeyId, accessKeySecret);
 
             map.put("success", true);
             map.put("msg", "设置保存成功");
         } catch (Exception e) {
-            log.error("设置保存失败", e);
+            LOG.error("设置保存失败", e);
             map.put("success", false);
             map.put("msg", "设置保存失败");
         }
@@ -190,7 +189,7 @@ public class AliyunCtl {
             map.put("success", true);
             map.put("msg", "设置保存成功");
         } catch (Exception e) {
-            log.error("设置失败", e);
+            LOG.error("设置失败", e);
             map.put("success", false);
             map.put("msg", "设置失败");
         }
@@ -207,8 +206,8 @@ public class AliyunCtl {
             Param paccessKeyId = paramService.findByKey(Constants.ALIYUN_ACCESS_KEY_ID);
             // 阿里云Secret
             Param paccessKeySecret = paramService.findByKey(Constants.ALIYUN_ACCESS_KEY_SECRET);
-            if (paccessKeyId == null || paccessKeyId.getTextValue().equals("")
-                    || paccessKeySecret == null || paccessKeySecret.getTextValue().equals("")) {
+            if (paccessKeyId == null || "".equals(paccessKeyId.getTextValue())
+                    || paccessKeySecret == null || "".equals(paccessKeySecret.getTextValue())) {
                 map.put("success", false);
                 map.put("msg", "请先设置access Key ID和access Key Secret!");
                 return map;
@@ -243,7 +242,6 @@ public class AliyunCtl {
             ossUrl.setTextValue(url);
             paramService.update(ossUrl);
 
-            Aliyun aliyun = Aliyun.getInstance();
             aliyun.initOSS(endpoint, ossUrl.getTextValue(), ossBucket.getTextValue(),
                     ossEndpoint.getTextValue());
 
@@ -254,7 +252,7 @@ public class AliyunCtl {
             map.put("success", true);
             map.put("msg", "设置保存成功");
         } catch (Exception e) {
-            log.error("设置保存失败", e);
+            LOG.error("设置保存失败", e);
             map.put("success", false);
             map.put("msg", "设置保存失败");
         }
@@ -291,7 +289,7 @@ public class AliyunCtl {
             map.put("success", true);
             map.put("msg", "设置保存成功");
         } catch (Exception e) {
-            log.error("设置保存失败", e);
+            LOG.error("设置保存失败", e);
             map.put("success", false);
             map.put("msg", "设置保存失败");
         }
@@ -324,7 +322,7 @@ public class AliyunCtl {
             map.put("buckets", buckets);
             map.put("success", true);
         } catch (Exception e) {
-            log.error("获取bucket列表失败", e);
+            LOG.error("获取bucket列表失败", e);
             map.put("success", false);
             map.put("msg", "获取bucket列表失败");
         }
@@ -344,7 +342,7 @@ public class AliyunCtl {
     public ModelAndView filelist(@RequestParam(defaultValue = "") String dir,
             @RequestParam(defaultValue = "") String keyword, HttpServletRequest request)
             throws UnsupportedEncodingException {
-        if (!dir.equals("") && !dir.endsWith("/"))
+        if (!"".equals(dir) && !"/".endsWith(dir))
             dir += "/";
         dir = java.net.URLDecoder.decode(dir, "utf-8");
         List<String> dirList = new ArrayList<String>();
@@ -352,11 +350,13 @@ public class AliyunCtl {
         String[] dirs = dir.split("/");
 
         dirList.add("");
-        if (!dir.equals(""))
+        if (!"".equals(dir)){
             for (int i = 0; i < dirs.length; i++) {
                 dirList.add(dirs[i]);
                 parentDirList.add(dir.substring(0, dir.indexOf(dirs[i])));
             }
+        }
+            
         parentDirList.add(dir);
 
         ModelAndView mv = new ModelAndView("admin/aliyun/fileList");
@@ -735,7 +735,7 @@ public class AliyunCtl {
             map.put("success", true);
             map.put("msg", "中断任务成功");
         } catch (Exception e) {
-            log.error("中断任务失败", e);
+            LOG.error("中断任务失败", e);
             map.put("success", false);
             map.put("msg", "中断任务失败");
         }

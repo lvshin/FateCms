@@ -26,7 +26,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -135,7 +134,7 @@ public class ProfileCtl {
 			map.put("success", true);
 			map.put("message", "保存成功");
 		} catch (Exception e) {
-			LOG.error("更新个人信息失败，用户ID："+user.getUid());
+			LOG.error("更新个人信息失败，用户ID："+user.getUid(), e);
 			map.put("success", false);
 			map.put("message", "未知错误");
 		}
@@ -158,7 +157,7 @@ public class ProfileCtl {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String filename = uploadFile.getOriginalFilename();// 获取文件名
 		String type = filename.substring(filename.lastIndexOf("."));
-		if (!(type.equals(".jpg") || type.equals(".jpeg") || type.equals(".png") || type.equals(".gif"))) {
+		if (!(".jpg".equals(type) || ".jpeg".equals(type) || ".png".equals(type) || ".gif".equals(type))) {
 			map.put("status", "error");
 			map.put("message", "图片格式错误");
 			return map;
@@ -195,7 +194,7 @@ public class ProfileCtl {
 				map.put("height", bi.getHeight());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				LOG.error("头像文件写入失败");
+				LOG.error("头像文件写入失败", e);
 				map.put("status", "error");
 				map.put("message", "系统内部错误");
 			}
@@ -239,7 +238,6 @@ public class ProfileCtl {
 			map.put("status", "success");
 			map.put("url", url);
 		} catch (Exception e) {
-			e.printStackTrace();
 			map.put("status", "error");
 			map.put("message", "文件切割异常");
 			LOG.error("文件切割异常:", e);
@@ -297,7 +295,7 @@ public class ProfileCtl {
 			out.close();
 			map.put("success", true);
 		} catch (Exception e) {
-			e.printStackTrace();
+		    LOG.error("打开文件失败", e);
 			map.put("success", false);
 		} finally {
 
@@ -305,7 +303,7 @@ public class ProfileCtl {
 				if (objectContent != null)
 					objectContent.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+			    LOG.error("文件流关闭异常", e);
 			}
 		}
 	}
@@ -538,9 +536,9 @@ public class ProfileCtl {
 					qq.getAccessKey(), "http://" + globalSetting.getAppUrl()
 							+ "/profile/bindQQ"));
 		} catch (QQConnectException e) {
-			e.printStackTrace();
+		    LOG.error("连接到QQ失败", e);
 		} catch (IOException e) {
-			e.printStackTrace();
+		    LOG.error("重定向失败", e);
 		}
 	}
 
@@ -609,12 +607,10 @@ public class ProfileCtl {
 				response.sendRedirect("thirdParty");
 			}
 		} catch (QQConnectException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		    LOG.error("连接到QQ失败", e);
+        } catch (IOException e) {
+            LOG.error("重定向会本站失败", e);
+        }
 	}
 
 	@RequestMapping(value = "/unbindQQ", method = RequestMethod.POST)
@@ -630,7 +626,7 @@ public class ProfileCtl {
 			tpaService.update(tpa);
 			map.put("success", true);
 		} catch (Exception e) {
-			e.printStackTrace();
+		    LOG.error("解绑QQ失败", e);
 			map.put("success", false);
 			map.put("message", "未知错误");
 		}
@@ -654,11 +650,10 @@ public class ProfileCtl {
 					"http://" + globalSetting.getAppUrl()
 							+ "/profile/bindWeibo"));
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (WeiboException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		    LOG.error("连接到新浪失败", e);
+        } catch (WeiboException e) {
+            LOG.error("重定向失败", e);
+        }
 	}
 
 	@RequestMapping("/bindWeibo")
@@ -719,15 +714,12 @@ public class ProfileCtl {
 				response.sendRedirect("thirdParty");
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (WeiboException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		    LOG.error("重定向回本站失败", e);
+        } catch (WeiboException e) {
+            LOG.error("连接到新浪失败", e);
+        } catch (JSONException e) {
+            LOG.error("JSON解析错误", e);
+        }
 	}
 	
 	@RequestMapping(value = "/unbindWeibo", method = RequestMethod.POST)
@@ -743,7 +735,7 @@ public class ProfileCtl {
 			tpaService.update(tpa);
 			map.put("success", true);
 		} catch (Exception e) {
-			e.printStackTrace();
+		    LOG.error("解绑新浪失败", e);
 			map.put("success", false);
 			map.put("message", "未知错误");
 		}

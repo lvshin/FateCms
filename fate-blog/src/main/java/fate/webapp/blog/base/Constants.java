@@ -71,6 +71,16 @@ public class Constants {
      */
     public static final String SEO_INDEX_DESCRIPTION = "seo_index_description";
     
+    /**
+     * 用户session变量名
+     */
+    public static final String USER_SESSION = "user_session";
+    
+    public static final String UPDATE_SET_FAIL = "设置保存失败";
+    
+    public static final String UPDATE_SET_SUCCESS = "设置保存成功";
+    
+    
     public static final String ALIYUN_ACCESS_KEY_ID = "aliyun_access_key_id";
     
     public static final String ALIYUN_ACCESS_KEY_SECRET = "aliyun_access_key_secret";
