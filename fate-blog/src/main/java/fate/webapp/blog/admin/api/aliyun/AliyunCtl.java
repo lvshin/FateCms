@@ -283,7 +283,6 @@ public class AliyunCtl {
             openSearchAppName.setTextValue(appName);
             paramService.update(openSearchAppName);
 
-            Aliyun aliyun = Aliyun.getInstance();
             aliyun.initOpenSearch(endpoint, appName);
 
             map.put("success", true);
@@ -342,8 +341,9 @@ public class AliyunCtl {
     public ModelAndView filelist(@RequestParam(defaultValue = "") String dir,
             @RequestParam(defaultValue = "") String keyword, HttpServletRequest request)
             throws UnsupportedEncodingException {
-        if (!"".equals(dir) && !"/".endsWith(dir))
+        if (!"".equals(dir) && !"/".endsWith(dir)){
             dir += "/";
+        }
         dir = java.net.URLDecoder.decode(dir, "utf-8");
         List<String> dirList = new ArrayList<String>();
         List<String> parentDirList = new ArrayList<String>();
@@ -389,14 +389,11 @@ public class AliyunCtl {
         Collections.sort(objList, (os1, os2) -> {
             if (os1.getKey().endsWith("/") && os2.getKey().endsWith("/")){
                 return os1.getKey().compareTo(os2.getKey());
-            }
-            else if (os1.getKey().endsWith("/")){
+            }else if (os1.getKey().endsWith("/")){
                 return -1;
-            }
-            else if (os2.getKey().endsWith("/")){
+            }else if (os2.getKey().endsWith("/")){
                 return 1;
-            }
-            else{
+            }else{
                 return os1.getKey().toLowerCase().compareTo(os2.getKey().toLowerCase());
             }
         });
@@ -407,14 +404,14 @@ public class AliyunCtl {
                         Strings.getHexString(b, "gb2312")));
 
         // 如果不是首页且搜索的关键词为空，则在列表开头显示返回上级目录
-        if (!(dir.equals("") && (keyword == null || keyword.equals("")))) {
+        if (!("".equals(dir) && (keyword == null || "".equals(keyword)))) {
             String url = "javascript:void(0);";
             FileListItem item = new FileListItem();
             item.setType("back");
             if (dir.length() > 0) {
                 int index = dir.substring(0, dir.length() - 1).lastIndexOf("/");
                 url = "admin/aliyun/filelist?dir="
-                        + (keyword.equals("")
+                        + ("".equals(keyword)
                                 ? (index > 0 ? dir.substring(0, index + 1) : "")
                                 : dir);
             } else
@@ -453,8 +450,9 @@ public class AliyunCtl {
 
                     if (getNumofSpecialChar(objName, '/') > 1) {
                         item.setFileName(objName.replace("/", "|").replace("+", "*"));
-                    } else
+                    } else{
                         item.setFileName(objName);
+                    }
                     item.setFileName(java.net.URLEncoder.encode(item.getFileName(), "UTF-8"));
                     item.setShowName(objName.substring(objName.substring(0, objName.length() - 1)
                             .lastIndexOf("/") + 1));

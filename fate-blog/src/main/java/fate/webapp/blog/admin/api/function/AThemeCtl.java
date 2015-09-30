@@ -26,8 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.mysql.jdbc.log.Log;
-
 import fate.webapp.blog.base.Constants;
 import fate.webapp.blog.model.Forum;
 import fate.webapp.blog.model.GlobalSetting;
@@ -42,7 +40,6 @@ import fate.webapp.blog.service.MediaService;
 import fate.webapp.blog.service.PingRecordService;
 import fate.webapp.blog.service.ThemeService;
 import fate.webapp.blog.service.ThemeTagService;
-import fate.webapp.blog.service.UserSessionService;
 import fate.webapp.blog.utils.DateUtil;
 import fate.webapp.blog.utils.FilterHTMLTag;
 import fate.webapp.blog.utils.PingUtils;
@@ -133,7 +130,7 @@ public class AThemeCtl {
             }
             theme.setTitle(theme.getTitle().trim());
             /* 从前台传的数据相当于新建了一个文章，会覆盖旧数据，所以得从数据库中取 */
-            if (theme.getGuid() != null && !theme.getGuid().equals("")) {
+            if (theme.getGuid() != null && !"".equals(theme.getGuid())) {
                 Theme a = themeService.find(theme.getGuid(), globalSetting.getRedisOpen());
                 a.setTitle(theme.getTitle());
                 a.setContent(theme.getContent());
@@ -167,8 +164,7 @@ public class AThemeCtl {
                     m.setUrl(media);
                     mediaService.update(m);
                 }
-            }
-            else if (theme.getType() == Theme.TYPE_AUDIO && files != null){
+            }else if (theme.getType() == Theme.TYPE_AUDIO && files != null){
                 for (int i = 0; i < files.length; i++) {
                     Media m = mediaService.findByUrl(files[i]);
                     if (m == null){
@@ -262,7 +258,7 @@ public class AThemeCtl {
             }
         }
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        if (forum.getChildForums() != null && forum.getChildForums().size() > 0) {
+        if (forum.getChildForums() != null && !forum.getChildForums().isEmpty()) {
 
             for (Forum f : forum.getChildForums()) {
                 list.add(forumToJson(f));
@@ -420,7 +416,7 @@ public class AThemeCtl {
             map.put("msg", "删除成功");
             map.put("success", true);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("删除主题失败", e);
             map.put("success", false);
             map.put("msg", "删除失败");
         }
@@ -445,7 +441,7 @@ public class AThemeCtl {
             map.put("msg", "删除成功");
             map.put("success", true);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("批量删除主题失败", e);
             map.put("success", false);
             map.put("msg", "删除失败");
         }
@@ -464,7 +460,7 @@ public class AThemeCtl {
             map.put("msg", "删除成功");
             map.put("success", true);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("彻底删除主题失败", e);
             map.put("success", false);
             map.put("msg", "删除失败");
         }
@@ -497,7 +493,7 @@ public class AThemeCtl {
             map.put("msg", "恢复成功");
             map.put("success", true);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("恢复主题失败", e);
             map.put("success", false);
             map.put("msg", "恢复失败");
         }
@@ -525,7 +521,7 @@ public class AThemeCtl {
             map.put("msg", (priority == 0 ? "取消" : "") + "置顶成功");
             map.put("success", true);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error((priority == 0 ? "取消" : "") + "置顶失败", e);
             map.put("success", false);
             map.put("msg", (priority == 0 ? "取消" : "") + "置顶失败");
         }

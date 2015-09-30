@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -44,18 +43,13 @@ import fate.webapp.blog.model.Index;
 import fate.webapp.blog.model.Navi;
 import fate.webapp.blog.model.Param;
 import fate.webapp.blog.model.Theme;
-import fate.webapp.blog.model.ThirdPartyAccess;
 import fate.webapp.blog.service.AdvertisementService;
 import fate.webapp.blog.service.AnnouncementService;
 import fate.webapp.blog.service.DuoShuoService;
-import fate.webapp.blog.service.ForumService;
-import fate.webapp.blog.service.JPushService;
 import fate.webapp.blog.service.NaviService;
 import fate.webapp.blog.service.ParamService;
 import fate.webapp.blog.service.ThemeService;
 import fate.webapp.blog.service.ThemeTagService;
-import fate.webapp.blog.service.ThirdPartyAccessService;
-import fate.webapp.blog.service.UserSessionService;
 import fate.webapp.blog.utils.DateUtil;
 import fate.webapp.blog.utils.FilterHTMLTag;
 import fate.webapp.blog.utils.QRUtil;
@@ -64,25 +58,13 @@ import fate.webapp.blog.utils.QRUtil;
 @RequestMapping("/op")
 public class OpenCtl {
 
-	private Logger log = Logger.getLogger(OpenCtl.class);
-	
-	@Autowired
-	private UserSessionService userSessionService;
-	
-	@Autowired
-	private ThirdPartyAccessService thirdPartyAccessService;
-	
-	@Autowired
-	private ForumService forumService;
+	private static final Logger LOG = Logger.getLogger(OpenCtl.class);
 	
 	@Autowired
 	private ThemeService themeService;
 	
 	@Autowired
 	private NaviService naviService;
-	
-	@Autowired
-	private JPushService jPushService;
 	
 	@Autowired
 	private ParamService paramService;
@@ -116,14 +98,12 @@ public class OpenCtl {
 	
 	@RequestMapping("/header")
 	public ModelAndView header(HttpServletRequest request){
-//		String ip = ClientInfo.getIp(request);
-//		ip = "120.195.15.202";//测试用
 		ModelAndView mv = new ModelAndView("base/header2");
 		GlobalSetting globalSetting = GlobalSetting.getInstance();
 		mv.addObject("qq", globalSetting.getQqAccess());
 		mv.addObject("xinlang", globalSetting.getWeiboAccess());
 		Index index = Index.getInstance();
-		if(index.getNavis().size()==0){
+		if(index.getNavis().isEmpty()){
 			List<Navi> navis = naviService.searchRoot();
 			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 			for (Navi n : navis) {
@@ -131,7 +111,6 @@ public class OpenCtl {
 			}
 			index.setNavis(list);
 		}
-//		mv.addObject("weather", JHUtils.weather(ip));
 		mv.addObject("navis", index.getNavis());
 		return mv;
 	}
@@ -169,6 +148,8 @@ public class OpenCtl {
 	@RequestMapping("/rightNavi")
 	public ModelAndView rightNavi(int fid, String url){
 		ModelAndView mv = new ModelAndView("base/rightNavi");
+		
+		//在右侧显示与当前版块平级的版块
 //		Forum forum = forumService.find(fid);
 //		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 //		if(forum!=null){//新创建的站点没有版块
@@ -203,8 +184,7 @@ public class OpenCtl {
 		Param search = paramService.findByKey(Constants.SEARCH_COUNT);
         if(search!=null){
         	search.setIntValue(search.getIntValue()+1);
-        }
-        else{
+        }else{
         	search = new Param();
         	search.setKey(Constants.SEARCH_COUNT);
         	search.setIntValue(0);
@@ -249,14 +229,11 @@ public class OpenCtl {
 			mv.addObject("pageSize", 10);
 			mv.addObject("keyword", keyword);
 		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("HTTP协议异常", e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    LOG.error("IO异常", e);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    LOG.error("JSON解析异常", e);
 		}
 		
 		return mv;
@@ -268,7 +245,7 @@ public class OpenCtl {
 		int height = 250;
 		// 二维码的图片格式
 		String format = "gif";
-		Hashtable<EncodeHintType, Object> hints = new Hashtable<EncodeHintType, Object>();
+		HashMap<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
 		// 内容所使用编码
 		hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
 		hints.put(EncodeHintType.MARGIN, 1);//二维码周围的空白部分大小
@@ -283,8 +260,7 @@ public class OpenCtl {
 			path += "images/logo_white.png";
 			QRUtil.writeToStream(bitMatrix, format, response.getOutputStream(),null);
 		} catch (WriterException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    LOG.error("二维码生成失败", e);
 		}
 	}
 	
@@ -301,13 +277,6 @@ public class OpenCtl {
 			long count = themeService.count(forum.getFid(), false, Theme.STATE_PUBLISH);
 			map.put("count", count);
 		}
-//		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-//		if (forum.getChildForums() != null && forum.getChildForums().size() > 0) {
-//			for (Forum f : forum.getChildForums()) {
-//				list.add(forumToJson(f));
-//			}
-//		}
-//		map.put("children", list);
 		return map;
 	}
 	
@@ -327,17 +296,18 @@ public class OpenCtl {
 	public void duoshuo(String action, String signature){
 		/*同步 */
 		Index index = Index.getInstance();
-		if(signature.equals("j6cQY5pEVCVmEnTWW7lywpBtm0I="))
-			SyncFromDuoShuo(Long.parseLong(index.getLogId().getTextValue()));
+		if(signature.equals("j6cQY5pEVCVmEnTWW7lywpBtm0I=")){
+			syncFromDuoShuo(Long.parseLong(index.getLogId().getTextValue()));
+		}
 	}
 	
-	public void SyncFromDuoShuo(long since_id){
+	public void syncFromDuoShuo(long sinceId){
 		HttpClient client = new HttpClient();
 		
 		Param duoshuoKey = paramService.findByKey(Constants.DUOSHUO_KEY);
         Param duoshuoSecret = paramService.findByKey(Constants.DUOSHUO_SECRET);
 		
-		GetMethod method = new GetMethod("http://api.duoshuo.com/log/list.json?short_name="+duoshuoKey.getTextValue()+"&secret="+duoshuoSecret.getTextValue()+"&since_id="+since_id);
+		GetMethod method = new GetMethod("http://api.duoshuo.com/LOG/list.json?short_name="+duoshuoKey.getTextValue()+"&secret="+duoshuoSecret.getTextValue()+"&since_id="+sinceId);
 		client.getParams().setContentCharset("UTF-8");
 		method.setRequestHeader("ContentType", "application/x-www-form-urlencoded;charset=UTF-8");
 		Index index = Index.getInstance();
@@ -345,12 +315,12 @@ public class OpenCtl {
 		try {
 			client.executeMethod(method);
 
-			String SubmitResult = method.getResponseBodyAsString();
+			String submitResult = method.getResponseBodyAsString();
 
-			JSONObject dataJson = new JSONObject(SubmitResult);
+			JSONObject dataJson = new JSONObject(submitResult);
 			
 			if(dataJson.getInt("code")!=0){
-				log.error(dataJson.getString("errorMessage"));
+				LOG.error(dataJson.getString("errorMessage"));
 			}else{
 				JSONArray response = dataJson.getJSONArray("response");
 				for(int i=0;i<response.length();i++){
@@ -376,8 +346,7 @@ public class OpenCtl {
 							date = date.substring(0,date.lastIndexOf("+")).replace("T", " ");
 							duoShuo.setCreatedAt(DateUtil.parse(date, "yyyy-MM-dd HH:mm:ss"));
 						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							LOG.error("时间字符串转换异常", e);
 						}
 						duoShuo.setMessage(meta.getString("message"));
 						duoShuo.setStatus(meta.getString("status"));
@@ -419,11 +388,9 @@ public class OpenCtl {
 
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error(e);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    LOG.error(e);
 		}
 	}
 }

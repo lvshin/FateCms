@@ -72,10 +72,9 @@ public class LoginCtl {
 			HttpServletResponse response, String redirect_to)
 			throws IOException {
 		String callback = "";
-		if (redirect_to == null || redirect_to.trim().equals("")){
+		if (redirect_to == null || "".equals(redirect_to.trim())){
 		    callback = request.getHeader("REFERER");
-		}
-		else{
+		}else{
 		    callback = redirect_to;
 		}
 			
@@ -169,20 +168,14 @@ public class LoginCtl {
 	@RequestMapping("/logout")
 	@ResponseBody
 	public Object logout(HttpSession session) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		try {
-			// 清除数据库中的登录状态
-			String guid = ((UserSession) session.getAttribute("userSession"))
-					.getGuid();
-			userSessionService.logout(guid);
-			// 清空当前session
-			session.invalidate();
-			map.put("success", true);
-		} catch (Exception e) {
-			e.printStackTrace();
-			map.put("success", false);
-		}
-		return map;
+        Map<String, Object> map = new HashMap<String, Object>();
+        // 清除数据库中的登录状态
+        String guid = ((UserSession) session.getAttribute("userSession")).getGuid();
+        userSessionService.logout(guid);
+        // 清空当前session
+        session.invalidate();
+        map.put("success", true);
+        return map;
 	}
 
 	@RequestMapping("/toQQ")
@@ -220,7 +213,7 @@ public class LoginCtl {
 							+ globalSetting.getAppUrl() + "/op/login/QQLogin");
 			String accessToken = null, openID = null;
 			long tokenExpireIn = 0L;
-			if (accessTokenObj.getAccessToken().equals("")) {
+			if ("".equals(accessTokenObj.getAccessToken())) {
 				// 我们的网站被CSRF攻击了或者用户取消了授权
 				// 做一些数据统计工作
 				LOG.info("没有获取到响应参数");
@@ -272,10 +265,10 @@ public class LoginCtl {
 					}
 				}
 
-				fate.qq4j.weibo.UserInfo weiboUserInfo = new fate.qq4j.weibo.UserInfo(
-						accessToken, openID);
-				com.qq.connect.javabeans.weibo.UserInfoBean weiboUserInfoBean = weiboUserInfo
-						.getUserInfo(qq.getAccessKey());
+//				fate.qq4j.weibo.UserInfo weiboUserInfo = new fate.qq4j.weibo.UserInfo(
+//						accessToken, openID);
+//				com.qq.connect.javabeans.weibo.UserInfoBean weiboUserInfoBean = weiboUserInfo
+//						.getUserInfo(qq.getAccessKey());
 				response.sendRedirect("callback");
 			}
 		} catch (QQConnectException e) {
@@ -411,7 +404,7 @@ public class LoginCtl {
 		session.setAttribute("userSession", userSession);
 		session.setAttribute("bwSessionId", sessionId);
 		String callback = (String) session.getAttribute("callback");
-		if (callback == null || callback.contains("/op/login"))
+		if (callback == null || "/op/login".contains(callback))
 			callback = "/";
 		session.removeAttribute("callback");
 		ModelAndView mv = new ModelAndView("redirect:" + callback);

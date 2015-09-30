@@ -16,7 +16,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,7 +29,6 @@ import com.aliyun.oss.model.ObjectListing;
 import com.aliyun.oss.model.PutObjectResult;
 
 import fate.webapp.blog.base.Constants;
-import fate.webapp.blog.model.Aliyun;
 import fate.webapp.blog.model.GlobalSetting;
 import fate.webapp.blog.model.Param;
 import fate.webapp.blog.service.OSSService;
@@ -42,10 +40,10 @@ import fate.webapp.blog.utils.Strings;
 @RequestMapping("/file")
 public class FileCtl {
 
-    private static final Logger log = Logger.getLogger(FileCtl.class);
+    private static final Logger LOG = Logger.getLogger(FileCtl.class);
     
 	// 设置每块为 200K
-	final long partSize1 = 1024 * 200;
+	private static final long PART_SIZE = 1024 * 200;
 
 	@Autowired
 	private ParamService paramService;
@@ -60,26 +58,6 @@ public class FileCtl {
 		mv.addObject("bucketName", bucketName);
 		return mv;
 	}
-
-	// @RequestMapping("/uploadFileName")
-	// @ResponseBody
-	// public Object uploadFileName(String fileName,HttpSession session){
-	// @SuppressWarnings("unchecked")
-	// List<ProgressEntity> list = (List<ProgressEntity>)
-	// session.getAttribute("progressList");
-	// ProgressEntity progressEntity = new ProgressEntity();
-	// fileName = fileName.substring(fileName.lastIndexOf("\\")+1);
-	// progressEntity.setFileName(fileName);
-	// if(list==null)
-	// {
-	// list = new ArrayList<ProgressEntity>();
-	// session.setAttribute("progressList", list);
-	// }
-	// list.add(progressEntity);
-	// Map<String,Object> map = new HashMap<String, Object>();
-	// map.put("listAll", list.size());
-	// return map;
-	// }
 
 	/**
 	 * 富文本编辑器对应的文件上传
@@ -116,12 +94,12 @@ public class FileCtl {
 		}
 
 		String url = null;
-		Param OSSUrl = paramService.findByKey(Constants.OSS_URL);
-		Param OSSEndpoint = paramService.findByKey(Constants.OSS_ENDPOINT);
+		Param ossUrl = paramService.findByKey(Constants.OSS_URL);
+		Param ossEndpoint = paramService.findByKey(Constants.OSS_ENDPOINT);
 		if (globalSetting.getAliyunUsed()) {
 		    url = "http://"
-                    + (OSSUrl == null||OSSUrl.getTextValue().equals("") ? ossBucket.getTextValue()
-                            + "." + OSSEndpoint.getTextValue() : OSSUrl.getTextValue()) + "/" + dir + filename;
+                    + (ossUrl == null||"".equals(ossUrl.getTextValue()) ? ossBucket.getTextValue()
+                            + "." + ossEndpoint.getTextValue() : ossUrl.getTextValue()) + "/" + dir + filename;
 		}
 		else{
 		    url = request.getContextPath() + "/file/getfile/"
@@ -140,7 +118,7 @@ public class FileCtl {
 			String folder, HttpSession session, HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String key = uploadFile.getOriginalFilename();
-		if (uploadFile.getSize() > partSize1) {
+		if (uploadFile.getSize() > PART_SIZE) {
 			map = ossService.multipartUpload(bucketName, uploadFile, folder);
 		} else {
 			PutObjectResult result = ossService.simpleUpload(bucketName, uploadFile, folder, key);
@@ -154,35 +132,6 @@ public class FileCtl {
 
 		return map;
 	}
-
-	// @RequestMapping("/getUploadProgress")
-	// @ResponseBody
-	// public Object getUploadProgress(String bucketName, String key,
-	// HttpSession session) {
-	// @SuppressWarnings("unchecked")
-	// List<ProgressEntity> list = (List<ProgressEntity>) session
-	// .getAttribute("progressList");
-	// for (int i = 0; i < list.size(); i++) {
-	// ListPartsRequest listPartsRequest = new ListPartsRequest(list
-	// .get(i).getBucketName(), list.get(i).getFileName(), list
-	// .get(i).getUploadId());
-	//
-	// // 获取上传的所有Part信息
-	// PartListing partListing = client.listParts(listPartsRequest);
-	//
-	// // 遍历所有Part
-	// for (PartSummary part : partListing.getParts()) {
-	// System.out.println("PartNumber: " + part.getPartNumber()
-	// + " ETag: " + part.getETag());
-	// }
-	//
-	// int percent = (int) Math
-	// .round(100.00 * partListing.getParts().size()
-	// / list.get(i).getPartsAll());
-	// list.get(i).setPartsRead(partListing.getParts().size());
-	// }
-	// return list;
-	// }
 
 	/**
 	 * 生成链接
@@ -223,7 +172,7 @@ public class FileCtl {
             url = url.replace("-internal", "");
             map.put("url", url);
         } catch (UnsupportedEncodingException e) {
-            log.error("无效的编码");
+            LOG.error("无效的编码", e);
         }
 		
 		return map;
@@ -295,12 +244,12 @@ public class FileCtl {
 		map.put("current_dir_path", path);
 		map.put("moveup_dir_path", parentpathList.size()>0?parentpathList.get(parentpathList.size()-1):"");
 		map.put("file_list", list);
-		Param OSSUrl = paramService.findByKey(Constants.OSS_URL);
-		Param OSSEndpoint = paramService.findByKey(Constants.OSS_ENDPOINT);
+		Param ossUrl = paramService.findByKey(Constants.OSS_URL);
+		Param ossEndpoint = paramService.findByKey(Constants.OSS_ENDPOINT);
 		Param ossBucket = paramService.findByKey(Constants.OSS_BUCKET);
 		String url = "http://"
-					+ (OSSUrl == null||OSSUrl.getTextValue().equals("") ? ossBucket.getTextValue()
-							+ "." + OSSEndpoint.getTextValue() : OSSUrl.getTextValue()) + "/" + path;
+					+ (ossUrl == null||ossUrl.getTextValue().equals("") ? ossBucket.getTextValue()
+							+ "." + ossEndpoint.getTextValue() : ossUrl.getTextValue()) + "/" + path;
 		map.put("current_url", url);
 		map.put("total_count", list.size());
 		return map;

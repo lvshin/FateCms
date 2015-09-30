@@ -286,8 +286,9 @@ public class ProfileCtl {
 			objectContent.skip(rangeStart);
 			while (off < rangeEnd) {
 				int len = objectContent.read(b);
-				if (len == -1)
+				if (len == -1){
 					break;
+				}
 				off += len;
 				out.write(b, 0, len);
 			}
@@ -300,8 +301,9 @@ public class ProfileCtl {
 		} finally {
 
 			try {
-				if (objectContent != null)
+				if (objectContent != null){
 					objectContent.close();
+				}
 			} catch (IOException e) {
 			    LOG.error("文件流关闭异常", e);
 			}
@@ -332,7 +334,7 @@ public class ProfileCtl {
 			ossService.headIconUpload(ossBucket.getTextValue(),
 					file, "user/headIcon/", key);
 			String newUrl = "http://"
-					+ (ossUrl == null||ossUrl.getTextValue()==null||ossUrl.equals("") ? ossBucket.getTextValue()
+					+ (ossUrl == null||ossUrl.getTextValue()==null||"".equals(ossUrl) ? ossBucket.getTextValue()
 							+ "." + ossEndpoint.getTextValue() : ossUrl.getTextValue()) + "/user/headIcon/" + key;
 			user.setHeadIconLocal(newUrl);
 			if (user.getHeadIconUsed() == User.HEADICON_LOCAL) {
@@ -554,7 +556,7 @@ public class ProfileCtl {
 							+ globalSetting.getAppUrl() + "/op/login/QQLogin");
 			String accessToken = null, openID = null;
 			long tokenExpireIn = 0L;
-			if (accessTokenObj.getAccessToken().equals("")) {
+			if ("".equals(accessTokenObj.getAccessToken())) {
 				// 我们的网站被CSRF攻击了或者用户取消了授权
 				// 做一些数据统计工作
 			    LOG.info("没有获取到响应参数");
@@ -600,10 +602,10 @@ public class ProfileCtl {
 				tpa.setUser(userSession.getUser());
 				tpaService.update(tpa);
 
-				fate.qq4j.weibo.UserInfo weiboUserInfo = new fate.qq4j.weibo.UserInfo(
-						accessToken, openID);
-				com.qq.connect.javabeans.weibo.UserInfoBean weiboUserInfoBean = weiboUserInfo
-						.getUserInfo(qq.getAccessKey());
+//				fate.qq4j.weibo.UserInfo weiboUserInfo = new fate.qq4j.weibo.UserInfo(
+//						accessToken, openID);
+//				com.qq.connect.javabeans.weibo.UserInfoBean weiboUserInfoBean = weiboUserInfo
+//						.getUserInfo(qq.getAccessKey());
 				response.sendRedirect("thirdParty");
 			}
 		} catch (QQConnectException e) {
@@ -671,7 +673,7 @@ public class ProfileCtl {
 									+ globalSetting.getAppUrl()
 									+ "/profile/bindWeibo");
 			String accessToken = null, uid = null, tokenExpireIn = null;
-			if (accessTokenObj.getAccessToken().equals("")) {
+			if ("".equals(accessTokenObj.getAccessToken())) {
 				// 我们的网站被CSRF攻击了或者用户取消了授权
 				// 做一些数据统计工作
 			    LOG.info("没有获取到响应参数");
