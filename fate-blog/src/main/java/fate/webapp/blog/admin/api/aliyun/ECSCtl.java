@@ -25,7 +25,7 @@ import fate.webapp.blog.service.MonitorService;
 @RequestMapping("admin/aliyun/ecs")
 public class ECSCtl {
 
-    private static final Logger log = Logger.getLogger(ECSCtl.class);
+    private static final Logger LOG = Logger.getLogger(ECSCtl.class);
     
     @Autowired
     private ECSService ecsService;
@@ -51,7 +51,7 @@ public class ECSCtl {
             }
 
         } catch (UnknownHostException e) {
-            log.error("获取本机IP失败", e);
+            LOG.error("获取本机IP失败", e);
         }
 
         

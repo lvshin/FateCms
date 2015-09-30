@@ -3,21 +3,16 @@ package fate.webapp.blog.admin.api.base;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import fate.webapp.blog.model.UserSession;
-import fate.webapp.blog.service.UserSessionService;
 
 @Controller
 @RequestMapping("/op/base")
 public class BaseCtl {
 
-	@Autowired
-	private UserSessionService userSessionService;
-	
 	@RequestMapping("/admin/head")
 	public String header(){
 		return "admin/base/head";

@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
@@ -33,6 +34,8 @@ import fate.webapp.blog.utils.TokenUtil;
 @RequestMapping("/op/security/verification")
 public class SecurityVerificationCtl {
 
+    private static final Logger LOG = Logger.getLogger(SecurityVerificationCtl.class);
+    
 	@Autowired
 	private SecurityVerificationService securityVerificationService;
 
@@ -66,7 +69,7 @@ public class SecurityVerificationCtl {
 			map.put("success", true);
 			map.put("res", JHUtils.sendSms(mobile, code, Constants.MOBILE_TIMEOUT, 0));
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error("短信发送失败", e);
 			map.put("success", false);
 			map.put("message", "短信发送失败");
 		}
@@ -162,13 +165,12 @@ public class SecurityVerificationCtl {
 									+ "</html>", true);
 			setting.getJavaMailSender().send(mailMessage);
 			map.put("success", true);
-			}
-			else{
+			}else{
 				map.put("success", false);
 				map.put("error_code", 1);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+		    LOG.error("邮件发送失败", e);
 			map.put("success", false);
 			map.put("error_code", 0);
 		}

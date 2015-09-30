@@ -97,7 +97,7 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
             startStatistics();
             cleanSecurity();
             initGlobalSetting();
-            FriendLinkCheck();
+            friendLinkCheck();
             initOthers();
             Param aliyunUsed = paramService.findByKey(Constants.ALIYUN_USED);
     		if(aliyunUsed!=null&&aliyunUsed.getIntValue()==1)
@@ -110,80 +110,105 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 	 */
 	public void initGlobalSetting(){
 		Param siteName = paramService.findByKey(Constants.SITE_NAME);
-		if(siteName==null)
+		if(siteName==null){
 			siteName = new Param();
+		}
 		Param appName = paramService.findByKey(Constants.APP_NAME);
-		if(appName==null)
+		if(appName==null){
 			appName = new Param();
+		}
 		Param appEnName = paramService.findByKey(Constants.APP_EN_NAME);
-		if(appEnName==null)
+		if(appEnName==null){
 			appEnName = new Param();
+		}
 		Param appUrl = paramService.findByKey(Constants.APP_URL);
-		if(appUrl==null)
+		if(appUrl==null){
 			appUrl = new Param();
+		}
 		Param adminEmail = paramService.findByKey(Constants.ADMIN_EMAIL);
-		if(adminEmail==null)
+		if(adminEmail==null){
 			adminEmail = new Param();
+		}
 		Param icp = paramService.findByKey(Constants.ICP);
-		if(icp==null)
+		if(icp==null){
 			icp = new Param();
+		}
 		Param statistics = paramService.findByKey(Constants.STATISTICS);
-		if(statistics==null)
+		if(statistics==null){
 			statistics = new Param();
+		}
 		Param statisticsHead = paramService.findByKey(Constants.STATISTICSHEAD);
-		if(statisticsHead==null)
+		if(statisticsHead==null){
 			statisticsHead = new Param();
+		}
 		Param aliyunUsed = paramService.findByKey(Constants.ALIYUN_USED);
-		if(aliyunUsed==null)
+		if(aliyunUsed==null){
 			aliyunUsed = new Param();
+		}
 		Param regAllow = paramService.findByKey(Constants.REG_ALLOW);
-		if(regAllow ==null)
+		if(regAllow ==null){
 			regAllow = new Param();
+		}
 		Param needEmailVerify = paramService.findByKey(Constants.NEED_EMAIL_VERIFY);
-		if(needEmailVerify==null)
+		if(needEmailVerify==null){
 			needEmailVerify = new Param();
+		}
 		Param qq = paramService.findByKey(Constants.QQ);
-		if(qq==null)
+		if(qq==null){
 			qq = new Param();
+		}
 		Param weibo = paramService.findByKey(Constants.WEIBO);
-		if(weibo==null)
+		if(weibo==null){
 			weibo = new Param();
+		}
 		Param smtp_server = paramService.findByKey(Constants.SMTP_SERVER);
-		if(smtp_server==null)
+		if(smtp_server==null){
 			smtp_server = new Param();
+		}
 		Param smtp_from = paramService.findByKey(Constants.SMTP_FROM);
-		if(smtp_from==null)
+		if(smtp_from==null){
 			smtp_from = new Param();
+		}
 		Param smtp_username = paramService.findByKey(Constants.SMTP_USERNAME);
-		if(smtp_username==null)
+		if(smtp_username==null){
 			smtp_username = new Param();
+		}
 		Param smtp_password = paramService.findByKey(Constants.SMTP_PASSWORD);
-		if(smtp_password==null)
+		if(smtp_password==null){
 			smtp_password = new Param();
+		}
 		Param smtp_timeout = paramService.findByKey(Constants.SMTP_TIMEOUT);
-		if(smtp_timeout==null)
+		if(smtp_timeout==null){
 			smtp_timeout = new Param();
+		}
 		Param siteMode = paramService.findByKey(Constants.SITE_MODE);
-		if(siteMode==null)
+		if(siteMode==null){
 			siteMode = new Param();
+		}
 		Param geetestId = paramService.findByKey(Constants.GEETEST_ID);
-		if(geetestId==null)
+		if(geetestId==null){
 			geetestId = new Param();
+		}
 		Param geetestKey = paramService.findByKey(Constants.GEETEST_KEY);
-		if(geetestKey==null)
+		if(geetestKey==null){
 			geetestKey = new Param();
+		}
 		Param duoshuoKey = paramService.findByKey(Constants.DUOSHUO_KEY);
-        if(duoshuoKey==null)
+        if(duoshuoKey==null){
             duoshuoKey = new Param();
+        }
         Param duoshuoSecret = paramService.findByKey(Constants.DUOSHUO_SECRET);
-        if(duoshuoSecret==null)
+        if(duoshuoSecret==null){
             duoshuoSecret = new Param();
+        }
         Param txAppKey = paramService.findByKey(Constants.TX_APP_KEY);
-        if(txAppKey==null)
+        if(txAppKey==null){
             txAppKey = new Param();
+        }
         Param redisOpen = paramService.findByKey(Constants.REDIS_OPEN);
-        if(redisOpen==null)
+        if(redisOpen==null){
             redisOpen = new Param();
+        }
         
 		GlobalSetting globalSetting = GlobalSetting.getInstance();
 		globalSetting.setSiteName(siteName.getTextValue());
@@ -257,8 +282,9 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 				aliyun.initOSS(ossEndpoint.getTextValue(), ossUrl.getTextValue(), ossBucket.getTextValue(), ossEndpoint.getTextValue());
 			Param openSearchEndpoint = paramService.findByKey(Constants.OPENSEARCH_ENDPOINT);
 			Param openSearchAppName = paramService.findByKey(Constants.OPENSEARCH_APPNAME);
-			if(openSearchEndpoint!=null&&!openSearchEndpoint.getTextValue().equals(""))
+			if(openSearchEndpoint!=null&&!"".equals(openSearchEndpoint.getTextValue())){
 				aliyun.initOpenSearch(openSearchEndpoint.getTextValue(), openSearchAppName.getTextValue());
+			}
 		}
 	}
 	
@@ -291,7 +317,7 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 	/**
 	 * 每天检测一遍友链
 	 */
-	public void FriendLinkCheck(){
+	public void friendLinkCheck(){
 		Timer timer = new Timer("friendLinkCheck", true);
         timer.schedule(new TimerTask() {
             @Override
@@ -330,9 +356,9 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
                 SiteStatistics.setHistrry_online(param.getIntValue());
                 SiteStatistics.setUpdateTime(new Date());
                 Param search = paramService.findByKey(Constants.SEARCH_COUNT);
-                if(search!=null)
+                if(search!=null){
                 	SiteStatistics.setSearch(search.getIntValue());
-                else{
+                }else{
                 	search = new Param();
                 	search.setKey(Constants.SEARCH_COUNT);
                 	search.setIntValue(0);
@@ -380,9 +406,8 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
         			fw.write(sitemapEncode());
         			fw.flush();
         			fw.close();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				} catch (IOException e) {
+					LOG.error("sitemap创建失败", e);
 				}  
                 LOG.info("--->Success create sitemap...");
             }

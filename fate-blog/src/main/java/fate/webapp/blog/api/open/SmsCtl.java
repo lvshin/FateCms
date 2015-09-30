@@ -25,7 +25,7 @@ import fate.webapp.blog.utils.TokenUtil;
 @RequestMapping("/op")
 public class SmsCtl {
 
-	private Logger log = Logger.getLogger(SmsCtl.class);
+	private static final Logger LOG = Logger.getLogger(SmsCtl.class);
 	
 	@Autowired
 	private SecurityVerificationService securityVerificationService;
@@ -34,7 +34,7 @@ public class SmsCtl {
 	@ResponseBody
 	public Object sendVerificationCode(String mobile,HttpServletRequest request, HttpSession session){
 		Map<String,Object> map = new HashMap<String, Object>();
-		if(mobile==null||mobile.equals("")){
+		if(mobile==null||"".equals(mobile)){
 			map.put("code", -1);
 			map.put("msg", "手机号不能为空");
 			return map;

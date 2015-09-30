@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import weibo4j.Users;
 import fate.webapp.blog.api.open.OpenCtl;
 import fate.webapp.blog.base.Constants;
 import fate.webapp.blog.model.GlobalSetting;

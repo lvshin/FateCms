@@ -51,7 +51,6 @@ public class IndexThread implements Runnable{
 	
 	public Map<String, Object> forumToJson(Forum forum) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		long start = System.currentTimeMillis();
 		map.put("forumName", forum.getForumName());
 		map.put("type", forum.getType());
 		map.put("fid", forum.getFid());
@@ -72,24 +71,25 @@ public class IndexThread implements Runnable{
 			}
 		}
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		if (forum.getChildForums() != null && forum.getChildForums().size() > 0) {
+		if (forum.getChildForums() != null && !forum.getChildForums().isEmpty()) {
 
 			for (Forum f : forum.getChildForums()) {
 				list.add(forumToJson(f));
 			}
 		}
 		map.put("children", list);
-		long end = System.currentTimeMillis();
 		return map;
 	}
 	
 	public String getImg(String content){
 		content = content.substring(content.indexOf("<img")+4);
-		if(content.indexOf("\"")==-1)
+		if(content.indexOf("\"")==-1){
 			return "";
+		}
 		content = content.substring(content.indexOf("src=")+5);
-		if(content.indexOf("\"")==-1)
+		if(content.indexOf("\"")==-1){
 			return "";
+		}
 		content = content.substring(0,content.indexOf("\""));
 		return content;
 	}

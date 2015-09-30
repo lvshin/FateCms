@@ -18,7 +18,7 @@ import fate.webapp.blog.service.ThemeService;
 @Controller
 public class ForumCtl {
 
-	private static final Logger log = Logger.getLogger(ForumCtl.class);
+	private static final Logger LOG = Logger.getLogger(ForumCtl.class);
 	
 	@Autowired
 	private ForumService forumService;

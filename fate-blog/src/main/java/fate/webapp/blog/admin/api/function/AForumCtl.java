@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,7 +22,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.aliyun.oss.model.PutObjectResult;
 
 import fate.webapp.blog.base.Constants;
-import fate.webapp.blog.model.Aliyun;
 import fate.webapp.blog.model.Forum;
 import fate.webapp.blog.model.GlobalSetting;
 import fate.webapp.blog.model.Index;
@@ -34,6 +34,8 @@ import fate.webapp.blog.service.ParamService;
 @RequestMapping("/admin/forum")
 public class AForumCtl {
 
+    private static final Logger LOG = Logger.getLogger(AForumCtl.class);
+    
 	@Autowired
 	private ForumService forumService;
 	
@@ -150,9 +152,9 @@ public class AForumCtl {
 		forum.setIconWidth(iconWidth);
 		forum.setForumDesc(forumDesc);
 		forum.setParentForum(parent);
-		if(parent.getType()==Forum.TYPE_REGION)
+		if(parent.getType()==Forum.TYPE_REGION){
 			forum.setType(Forum.TYPE_FORUM);
-		else if(parent.getType()==Forum.TYPE_FORUM){
+		}else if(parent.getType()==Forum.TYPE_FORUM){
 			forum.setType(Forum.TYPE_SUB);
 		}
 		forumService.update(forum);
@@ -192,13 +194,14 @@ public class AForumCtl {
 		}
 
 		String url = null;
-		if (globalSetting.getAliyunUsed())
+		if (globalSetting.getAliyunUsed()){
 			url = "http://"
 					+ (ossUrl == null ? ossBucket.getTextValue()
 							+ "." + ossEndpoint.getTextValue() : ossUrl.getTextValue() + "/" + dir + filename);
-		else
+		}else{
 			url = request.getContextPath() + "/file/getfile/"
 					+ ossBucket.getTextValue() + "/" + dir + filename;
+		}
 		map.put("url", url);
 		map.put("success", true);
 
@@ -213,7 +216,7 @@ public class AForumCtl {
 		map.put("forumOrder", forum.getForumOrder());
 		map.put("parentFid", forum.getParentForum()==null?0:forum.getParentForum().getFid());
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		if (forum.getChildForums() != null && forum.getChildForums().size() > 0) {
+		if (forum.getChildForums() != null && !forum.getChildForums().isEmpty()) {
 
 			for (Forum f : forum.getChildForums()) {
 				list.add(forumToJson(f));
@@ -257,7 +260,7 @@ public class AForumCtl {
 				}
 			map.put("success", true);
 		} catch (JSONException e) {
-			e.printStackTrace();
+			LOG.error("添加版块失败", e);
 			map.put("success", false);
 			map.put("msg", "未知错误");
 		}
@@ -272,7 +275,7 @@ public class AForumCtl {
 			forumService.delete(forumService.find(fid));
 			map.put("success", true);
 		} catch (Exception e) {
-			e.printStackTrace();
+		    LOG.error("删除版块失败", e);
 			map.put("success", false);
 			map.put("msg", "未知错误");
 		}

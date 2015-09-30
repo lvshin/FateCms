@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,8 @@ import fate.webapp.blog.service.AdvertisementService;
 @RequestMapping("/admin/advertisement")
 public class AAdvertisementCtl {
 
+    private static final Logger LOG = Logger.getLogger(AAdvertisementCtl.class);
+    
 	@Autowired
 	private AdvertisementService advertisementService;
 	
@@ -77,7 +80,7 @@ public class AAdvertisementCtl {
 			map.put("success", true);
 			map.put("msg", "保存成功");
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error("广告保存失败", e);
 			map.put("success", false);
 			map.put("msg", "保存失败");
 		}

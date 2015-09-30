@@ -34,7 +34,7 @@ import fate.webapp.blog.service.AnnouncementService;
 @RequestMapping("/admin/announcement")
 public class AAnnouncementCtl {
 
-    private static final Logger log = Logger.getLogger(AAnnouncementCtl.class);
+    private static final Logger LOG = Logger.getLogger(AAnnouncementCtl.class);
     
 	@Autowired
 	private AnnouncementService announcementService;
@@ -89,7 +89,7 @@ public class AAnnouncementCtl {
 			map.put("success", true);
 			map.put("msg", "保存成功");
 		} catch (Exception e) {
-			log.error("公告保存失败", e);
+			LOG.error("公告保存失败", e);
 			map.put("success", false);
 			map.put("msg", "保存失败");
 		}
@@ -108,7 +108,7 @@ public class AAnnouncementCtl {
             map.put("success", true);
             map.put("msg", "保存成功");
         } catch (Exception e) {
-            log.error("公告删除失败", e);
+            LOG.error("公告删除失败", e);
             map.put("success", false);
             map.put("msg", "保存失败");
         }

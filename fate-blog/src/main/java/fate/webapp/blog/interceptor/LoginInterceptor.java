@@ -31,13 +31,12 @@ public class LoginInterceptor implements HandlerInterceptor{
 		boolean flag = false;
 		if(userSession!=null&&bwSessionId!=null && bwSessionId.equals(userSession.getSessionId())){
 			//防止在后台url泄露的情况下，用户直接输入地址进入后台，需验证是否有管理员权限
-			if(request.getServletPath().contains("/admin")&&userSession.getUser().getUserType()!=User.USER_TYPE_ADMIN)
+			if(request.getServletPath().contains("/admin")&&userSession.getUser().getUserType()!=User.USER_TYPE_ADMIN){
 				response.sendRedirect(base+"/");
-			else
+			}else{
 				flag = true;
-		}
-		else
-		{
+			}
+		}else{
 			request.getSession().setAttribute("callback", request.getHeader("REFERER"));
 			response.sendRedirect(base+"/");
 		}

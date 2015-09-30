@@ -86,7 +86,7 @@ public class IndexCtl {
 		    LOG.info("查询文章总数");
 			index.setCount(themeService.count(0, false, Theme.STATE_PUBLISH));
 		}
-		if(index.getFriendLinks().size()==0){
+		if(index.getFriendLinks().isEmpty()){
 			index.setFriendLinks(friendLinkService.searchByState(FriendLink.STATE_PASS));
 		}
 		
@@ -133,7 +133,7 @@ public class IndexCtl {
 			}
 		}
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		if (forum.getChildForums() != null && forum.getChildForums().size() > 0) {
+		if (forum.getChildForums() != null && !forum.getChildForums().isEmpty()) {
 
 			for (Forum f : forum.getChildForums()) {
 				list.add(forumToJson(f));
@@ -150,11 +150,13 @@ public class IndexCtl {
 	 */
 	public String getImg(String content){
 		content = content.substring(content.indexOf("<img")+4);
-		if(content.indexOf("\"")==-1)
+		if(content.indexOf("\"")==-1){
 			return "";
+		}
 		content = content.substring(content.indexOf("src=")+5);
-		if(content.indexOf("\"")==-1)
+		if(content.indexOf("\"")==-1){
 			return "";
+		}
 		content = content.substring(0,content.indexOf("\""));
 		return content;
 	}

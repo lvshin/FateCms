@@ -110,10 +110,11 @@ public class SiteSetCtl {
 			pobj.setKey(key);
 			pobj.setType(type);
 		}
-		if(type==Param.TYPE_TEXT)
+		if(type==Param.TYPE_TEXT){
 			pobj.setTextValue((String) value);
-		else
+		}else{
 			pobj.setIntValue((int) value);
+		}
 		paramService.update(pobj);
 	}
 	

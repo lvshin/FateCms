@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,8 @@ import fate.webapp.blog.utils.EncryptUtil;
 @RequestMapping("/admin/user")
 public class AUserCtl {
 
+    private static final Logger LOG = Logger.getLogger(AUserCtl.class);
+    
 	@Autowired
 	private UserService userService;
 	
@@ -62,7 +65,7 @@ public class AUserCtl {
 			userService.update(user);
 			map.put("success", true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error("重置密码失败", e);
 			map.put("success", false);
 		}
 		return map;

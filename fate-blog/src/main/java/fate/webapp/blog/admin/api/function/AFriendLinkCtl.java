@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,8 @@ import fate.webapp.blog.utils.Strings;
 @RequestMapping("/admin/friendLink")
 public class AFriendLinkCtl {
 
+    private static final Logger LOG = Logger.getLogger(AFriendLinkCtl.class);
+    
 	@Autowired
 	private FriendLinkService friendLinkService;
 	
@@ -44,13 +47,13 @@ public class AFriendLinkCtl {
 			friendLink.setReason(reason);
 			friendLinkService.update(friendLink);
 			if(!Strings.isBlank(reason)&&!Strings.isBlank(friendLink.getEmail())){
-				//发送邮件
+				//发送邮件通知站长
 			}
 			Index index = Index.getInstance();
 			index.setFriendLinks(friendLinkService.searchByState(FriendLink.STATE_PASS));
 			map.put("success", true);
 		}catch(Exception e){
-			e.printStackTrace();
+			LOG.error("友链审批失败", e);
 			map.put("success", false);
 			map.put("msg", "未知错误");
 		}
@@ -71,7 +74,7 @@ public class AFriendLinkCtl {
 			index.setFriendLinks(friendLinkService.searchByState(FriendLink.STATE_PASS));
 			map.put("success", true);
 		}catch(Exception e){
-			e.printStackTrace();
+		    LOG.error("友链添加失败", e);
 			map.put("success", false);
 			map.put("msg", "未知错误");
 		}
@@ -98,7 +101,7 @@ public class AFriendLinkCtl {
 			index.setFriendLinks(friendLinkService.searchByState(FriendLink.STATE_PASS));
 			map.put("success", true);
 		}catch(Exception e){
-			e.printStackTrace();
+		    LOG.error("友链删除失败", e);
 			map.put("success", false);
 			map.put("msg", "未知错误");
 		}

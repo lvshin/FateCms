@@ -32,7 +32,6 @@ import fate.webapp.blog.service.AdvertisementService;
 import fate.webapp.blog.service.CommentsService;
 import fate.webapp.blog.service.ForumService;
 import fate.webapp.blog.service.ThemeService;
-import fate.webapp.blog.service.ThemeTagService;
 import fate.webapp.blog.service.ThirdPartyAccessService;
 import fate.webapp.blog.service.UserService;
 import fate.webapp.blog.service.VoteRecordService;
@@ -42,7 +41,7 @@ import fate.webapp.blog.utils.FilterHTMLTag;
 @RequestMapping("")
 public class ThemeCtl {
 
-	private Logger log = Logger.getLogger(ThemeCtl.class);
+	private static final Logger LOG = Logger.getLogger(ThemeCtl.class);
 	
 	@Autowired
 	private ThemeService themeService;
@@ -58,9 +57,6 @@ public class ThemeCtl {
 	
 	@Autowired
 	private ForumService forumService;
-	
-	@Autowired
-	private ThemeTagService themeTagService;
 	
 	@Autowired
 	private AdvertisementService advertisementService; 
@@ -120,7 +116,6 @@ public class ThemeCtl {
 			"Renren Share Slurp",//人人分享
 			"SinaWeiboBot",//新浪微博分享
 			"masscan"//Masscan 扫描器
-			
 	};
 	
 	/**
@@ -135,8 +130,9 @@ public class ThemeCtl {
 		if(agent==null)
 			return true;
 		for(i=0;i<spider_key.length;i++){
-			if(agent.trim().toLowerCase().contains(spider_key[i].toLowerCase()))
+			if(agent.trim().toLowerCase().contains(spider_key[i].toLowerCase())){
 				break;
+			}
 		}
 		if(i<spider_key.length){
 			flag = true;
@@ -164,17 +160,24 @@ public class ThemeCtl {
 			try {
 				response.sendError(404);//发送404
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOG.error("发送404状态码失败", e);
 			}
 			return null;
 		}
 		String jsp = null;
 		switch (theme.getType()) {
-		case 0:jsp = "theme/theme";break;
-		case 1:jsp = "theme/audioTheme";break;
-		case 2:jsp = "theme/videoTheme";break;
-
-		default:jsp = "theme/theme";break;
+            case 0 :
+                jsp = "theme/theme";
+                break;
+            case 1 :
+                jsp = "theme/audioTheme";
+                break;
+            case 2 :
+                jsp = "theme/videoTheme";
+                break;
+            default :
+                jsp = "theme/theme";
+                break;
 		}
 		ModelAndView mv = new ModelAndView(jsp);
 		if(referer!=null&&referer.contains("op/search")){
@@ -182,8 +185,9 @@ public class ThemeCtl {
 		}
 		UserSession userSession = (UserSession) request.getSession(false).getAttribute("userSession");
 		//主题不是草稿状态并且当前用户不是管理员
-		if(!isSpider(request)&&theme.getState()!=Theme.STATE_EDIT&&(userSession==null||(userSession!=null&&userSession.getUser().getUserType()==User.USER_TYPE_NORMAL)))
+		if(!isSpider(request)&&theme.getState()!=Theme.STATE_EDIT&&(userSession==null||(userSession!=null&&userSession.getUser().getUserType()==User.USER_TYPE_NORMAL))){
 			theme.setViews(theme.getViews()+1);
+		}
 		theme.setReplies(theme.getDuoShuos().size());
 		theme = themeService.update(theme, globalSetting.getRedisOpen());
 		
@@ -214,14 +218,14 @@ public class ThemeCtl {
 				map.put("msg", "您的帐号处于未验证状态，请先验证您的邮箱/手机！");
 				return map;
 			}
-			if(themeGuid!=null)
+			if(themeGuid!=null){
 				comments.setTheme(themeService.find(themeGuid, globalSetting.getRedisOpen()));
-			else if(commentGuid!=null){
+			}else if(commentGuid!=null){
 				comments.setCommentParent(commentsService.find(commentGuid));
-				if(toUid!=0)
+				if(toUid!=0){
 					comments.setTo(userService.find(toUid));
-			}
-			else{
+				}
+			}else{
 				map.put("success", false);
 				map.put("msg", "数据异常");
 				return map;
@@ -236,9 +240,9 @@ public class ThemeCtl {
 			map.put("success", true);
 			map.put("msg", "评论成功");
 		}catch(Exception e){
-			e.printStackTrace();
+			LOG.error("评论失败", e);
 			map.put("success", false);
-			map.put("msg", "未知错误");
+			map.put("msg", "评论失败");
 		}
 		
 		return map;
@@ -260,12 +264,10 @@ public class ThemeCtl {
 				}
 				forum = theme.getForum();
 				mv.addObject("theme", theme);
-			}
-			else{
+			}else{
 			    forum = forumService.find(fid);
 			}
-		}
-		else{
+		}else{
 		    forum = forumService.find(fid);
 		}
 			
@@ -285,7 +287,7 @@ public class ThemeCtl {
 		Map<String, Object> map = new HashMap<String, Object>();
 		 GlobalSetting globalSetting = GlobalSetting.getInstance();
 		try{
-			if((type!=1&&type!=2)||(guid==null||guid.trim().equals(""))){
+			if((type!=1&&type!=2)||(guid==null||"".equals(guid.trim()))){
 				map.put("success", false);
 				map.put("msg", "数据异常");
 				return map;
@@ -299,10 +301,11 @@ public class ThemeCtl {
 				if(type==1){
 					Theme theme = themeService.find(guid, globalSetting.getRedisOpen());
 					voteRecord.setTheme(theme);
-					if(voteType==1)
+					if(voteType==1){
 						theme.setUp(theme.getUp()+1);
-					else if(voteType==2)
+					}else if(voteType==2){
 						theme.setDown(theme.getDown()+1);
+					}
 					up = theme.getUp();
 					down = theme.getDown();
 					themeService.update(theme, globalSetting.getRedisOpen());
@@ -310,10 +313,11 @@ public class ThemeCtl {
 				else if(type==2){
 					Comments comments = commentsService.find(guid);
 					voteRecord.setComments(comments);
-					if(voteType==1)
+					if(voteType==1){
 						comments.setUp(comments.getUp()+1);
-					else if(voteType==2)
+					}else if(voteType==2){
 						comments.setDown(comments.getDown()+1);
+					}
 					up = comments.getUp();
 					down = comments.getDown();
 					commentsService.update(comments);
@@ -328,7 +332,7 @@ public class ThemeCtl {
 			}
 			
 		}catch(Exception e){
-			e.printStackTrace();
+			LOG.error("投票失败", e);
 			map.put("success", false);
 			map.put("msg", "未知错误");
 		}

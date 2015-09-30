@@ -17,7 +17,7 @@ import fate.webapp.blog.utils.Strings;
 @RequestMapping("/friendLink")
 public class FriendLinkCtl {
 
-	private static final Logger log = Logger.getLogger(FriendLinkCtl.class);
+	private static final Logger LOG = Logger.getLogger(FriendLinkCtl.class);
 	
 	@Autowired
 	private FriendLinkService friendLinkService;
@@ -49,7 +49,7 @@ public class FriendLinkCtl {
 		friendLink.setUrl(linkUrl);
 		friendLink.setEmail(linkEmail);
 		friendLinkService.save(friendLink);
-		log.info(linkName+"提交了友链\""+linkUrl+"\"");
+		LOG.info(linkName+"提交了友链\""+linkUrl+"\"");
 		map.put("success", true);
 		return map;
 	}
