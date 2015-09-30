@@ -192,7 +192,7 @@ public class SecurityVerificationCtl {
 		try {
 			code = new String(Base64.decode(code));
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+		    LOG.error("解码失败", e);
 			map.put("success", false);
 			map.put("error_code", 2);
 			return map;
