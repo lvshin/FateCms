@@ -363,7 +363,6 @@ public class AliyunCtl {
 
         ObjectListing listing = ossService.getList(dir);
 
-        System.out.println(listing.getBucketName());
         // 正在上传的文件列表
         @SuppressWarnings("unchecked")
         List<ProgressEntity> list = (List<ProgressEntity>) request.getSession().getAttribute(

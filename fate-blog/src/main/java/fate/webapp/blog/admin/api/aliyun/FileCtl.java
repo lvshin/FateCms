@@ -94,7 +94,6 @@ public class FileCtl {
 	public Map<String, Object> uploadImg(
 			@RequestParam("imgFile") MultipartFile uploadFile, String dir,
 			HttpServletRequest request) {
-		System.out.println("in");
 		Map<String, Object> map = new HashMap<String, Object>();
 		String filename = uploadFile.getOriginalFilename();
 		GlobalSetting globalSetting = (GlobalSetting) request.getSession()
@@ -119,13 +118,16 @@ public class FileCtl {
 		String url = null;
 		Param OSSUrl = paramService.findByKey(Constants.OSS_URL);
 		Param OSSEndpoint = paramService.findByKey(Constants.OSS_ENDPOINT);
-		if (globalSetting.getAliyunUsed()) 
-			url = "http://"
-					+ (OSSUrl == null||OSSUrl.getTextValue().equals("") ? ossBucket.getTextValue()
-							+ "." + OSSEndpoint.getTextValue() : OSSUrl.getTextValue()) + "/" + dir + filename;
-		else
-			url = request.getContextPath() + "/file/getfile/"
-					+ ossBucket.getTextValue() + "/" + dir + filename;
+		if (globalSetting.getAliyunUsed()) {
+		    url = "http://"
+                    + (OSSUrl == null||OSSUrl.getTextValue().equals("") ? ossBucket.getTextValue()
+                            + "." + OSSEndpoint.getTextValue() : OSSUrl.getTextValue()) + "/" + dir + filename;
+		}
+		else{
+		    url = request.getContextPath() + "/file/getfile/"
+                    + ossBucket.getTextValue() + "/" + dir + filename;
+		}
+			
 		map.put("url", url);
 		map.put("error", 0);
 
@@ -281,7 +283,6 @@ public class FileCtl {
 		List<String> pathList = new ArrayList<String>();
 		List<String> parentpathList = new ArrayList<String>();
 		String[] paths = path.split("/");
-		System.out.println(Arrays.toString(paths));
 		pathList.add("");
 		if(!path.equals(""))
 		for(int i=0;i<paths.length;i++){

@@ -8,6 +8,7 @@ import java.io.LineNumberReader;
 import java.lang.management.ManagementFactory;
 import java.util.StringTokenizer;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.sun.management.OperatingSystemMXBean;
@@ -24,6 +25,9 @@ import fate.webapp.blog.utils.Bytes;
  */
 @Service
 public class MonitorServiceImpl implements MonitorService {
+    
+    private static final Logger LOG = Logger.getLogger(MonitorServiceImpl.class);
+    
     private static final int CPUTIME = 30;
     private static final int PERCENT = 100;
     private static final int FAULTLENGTH = 10;
@@ -90,7 +94,6 @@ public class MonitorServiceImpl implements MonitorService {
         StringTokenizer tokenStat = null;
         linuxVersion = System.getProperty("os.version");
         try {
-            System.out.println("Get usage rate of CUP , linux version: " + linuxVersion);
             Process process = Runtime.getRuntime().exec("top -b -n 1");
             is = process.getInputStream();
             isr = new InputStreamReader(is);
@@ -108,7 +111,6 @@ public class MonitorServiceImpl implements MonitorService {
                 String system = tokenStat.nextToken();
                 tokenStat.nextToken();
                 String nice = tokenStat.nextToken();
-                System.out.println(user + " , " + system + " , " + nice);
                 user = user.substring(0, user.indexOf("%"));
                 system = system.substring(0, system.indexOf("%"));
                 nice = nice.substring(0, nice.indexOf("%"));
@@ -122,7 +124,6 @@ public class MonitorServiceImpl implements MonitorService {
                 tokenStat = new StringTokenizer(brStat.readLine());
                 tokenStat.nextToken();
                 String cpuUsage = tokenStat.nextToken();
-                System.out.println("CPU idle : " + cpuUsage);
                 
                 //linux中正确的内存使用量
                 tokenStat = new StringTokenizer(brStat.readLine());
@@ -159,7 +160,6 @@ public class MonitorServiceImpl implements MonitorService {
                 return (1 - usage.floatValue() / 100);
             }
         } catch (IOException ioe) {
-            System.out.println(ioe.getMessage());
             freeResource(is, isr, brStat);
             return 1;
         } finally {
@@ -175,8 +175,8 @@ public class MonitorServiceImpl implements MonitorService {
                 isr.close();
             if (br != null)
                 br.close();
-        } catch (IOException ioe) {
-            System.out.println(ioe.getMessage());
+        } catch (IOException e) {
+            LOG.info(e.getMessage());
         }
     }
     /**

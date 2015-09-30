@@ -350,7 +350,6 @@ public class OpenCtl {
 			JSONObject dataJson = new JSONObject(SubmitResult);
 			
 			if(dataJson.getInt("code")!=0){
-				System.out.println(dataJson.getString("errorMessage"));
 				log.error(dataJson.getString("errorMessage"));
 			}else{
 				JSONArray response = dataJson.getJSONArray("response");
@@ -386,7 +385,6 @@ public class OpenCtl {
 						duoShuo.setType(meta.getString("type"));
 						duoShuo.setLastModify(new Date().getTime());
 						duoShuo.setLogId(logId);
-						System.out.println(duoShuo);
 						duoShuoService.save(duoShuo);
 						break;
 					case "approve":

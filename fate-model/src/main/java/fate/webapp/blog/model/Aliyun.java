@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.http.client.ClientProtocolException;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +28,8 @@ import com.aliyun.oss.OSSClient;
  * 
  */
 public class Aliyun {
+    
+    private static final Logger LOG = Logger.getLogger(Aliyun.class);
 
 	private static Aliyun aliyun = new Aliyun();
 	private String accessKeyId;
@@ -127,12 +130,11 @@ public class Aliyun {
                     suggestions.add(item.getString("suggestion"));
                 }
                 Map<String,Object> ret = new HashMap<String,Object>();
-                System.out.println(suggestions);
                 ret.put("result",suggestions);
                 ret.put("status","OK");
                 return ret;
             } else {
-                System.out.println("error");
+                LOG.info("获取搜索候选词失败");
             }
         } catch (UnknownHostException e) {
             e.printStackTrace();

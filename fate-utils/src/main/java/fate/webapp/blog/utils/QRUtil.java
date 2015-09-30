@@ -100,7 +100,6 @@ public class QRUtil {
     public static void insertImage(BufferedImage source, String imgPath,  
             boolean needCompress) throws IOException{  
         File file = new File(imgPath);  
-        System.out.println(file.getAbsolutePath());
         if (!file.exists()) {  
             System.err.println(""+imgPath+"   该文件不存在！");  
             return;  

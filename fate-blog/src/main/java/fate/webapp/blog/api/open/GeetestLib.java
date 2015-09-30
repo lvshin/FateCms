@@ -17,14 +17,12 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Java SDK
- * 
- * @author Zheng
- * @time 2014年7月10日 下午3:29:09
- */
+import org.apache.log4j.Logger;
+
 public class GeetestLib {
 
+    private static final Logger LOG = Logger.getLogger(GeetestLib.class);
+    
 	/**
 	 * SDK版本编号
 	 */
@@ -109,19 +107,11 @@ public class GeetestLib {
 
 	/**
 	 * 获取版本编号
-	 * 
-	 * @author Zheng
-	 * @email dreamzsm@gmail.com
-	 * @time 2014年7月11日 上午11:07:11
 	 * @return
 	 */
 	public String getVersionInfo() {
 		return verName;
 	}
-
-	// public void setCaptcha_id(String captcha_id) {
-	// this.captcha_id = captcha_id;
-	// }
 
 	/**
 	 * 一个无参构造函数
@@ -165,15 +155,6 @@ public class GeetestLib {
 		this.privateKey = privateKey;
 	}
 
-	// public GeetestLib(String privateKey, String captcha_id) {
-	// this.privateKey = privateKey;
-	// this.captcha_id = captcha_id;
-	// }
-
-	// public int getVerCode() {
-	// return verCode;
-	// }
-
 	public String getVerName() {
 		return verName;
 	}
@@ -193,12 +174,6 @@ public class GeetestLib {
 	 */
 	public int preProcess() {
 
-		// first check the server status , to handle failback
-		// if (getGtServerStatus() != 1) {
-		// return 0;
-		// }
-
-		// just check the server side register
 		if (registerChallenge() != 1) {
 			return 0;
 		}
@@ -243,9 +218,6 @@ public class GeetestLib {
 	/**
 	 * 获取极验的服务器状态
 	 * 
-	 * @author Zheng
-	 * @email dreamzsm@gmail.com
-	 * @time 2014年7月10日 下午7:12:38
 	 * @return
 	 */
 	public int getGtServerStatus() {
@@ -255,7 +227,7 @@ public class GeetestLib {
 			if (readContentFromGet(GET_URL).equals("ok")) {
 				return 1;
 			} else {
-				System.out.println("gServer is Down");
+				LOG.info("gServer is Down");
 				return 0;
 			}
 		} catch (Exception e) {
@@ -272,7 +244,6 @@ public class GeetestLib {
 	public int getRandomNum() {
 
 		int rand_num = (int) (Math.random() * 100);
-		// System.out.print(rand_num);
 		return rand_num;
 	}
 
@@ -285,21 +256,12 @@ public class GeetestLib {
 		try {
 			String GET_URL = api_url + "/register.php?gt=" + this.captchaId;
 
-			// if (this.productType.equals("popup")) {
-			// GET_URL += String.format("&product=%s&popupbtnid=%s",
-			// this.productType, this.submitBtnId);
-			// } else {
-			// GET_URL += String.format("&product=%s", this.productType);
-			// }
-
-			// System.out.print(GET_URL);
 			String result_str = readContentFromGet(GET_URL);
-			// System.out.println(result_str);
 			if (32 == result_str.length()) {
 				this.challengeId = result_str;
 				return 1;
 			} else {
-				System.out.println("gServer register challenge failed");
+				LOG.info("gServer register challenge failed");
 				return 0;
 			}
 		} catch (Exception e) {
@@ -312,8 +274,6 @@ public class GeetestLib {
 	/**
 	 * 读取服务器
 	 * 
-	 * @author Zheng dreamzsm@gmail.com
-	 * @time 2014年7月10日 下午7:11:11
 	 * @param getURL
 	 * @return
 	 * @throws IOException
@@ -348,7 +308,6 @@ public class GeetestLib {
 	/**
 	 * 判断一个表单对象值是否为空
 	 * 
-	 * @time 2014年7月10日 下午5:54:25
 	 * @param gtObj
 	 * @return
 	 */
@@ -364,7 +323,6 @@ public class GeetestLib {
 	/**
 	 * 检查客户端的请求是否为空--三个只要有一个为空，则判断不合法
 	 * 
-	 * @time 2014年7月10日 下午5:46:34
 	 * @param request
 	 * @return
 	 */
@@ -388,7 +346,6 @@ public class GeetestLib {
 	/**
 	 * 检验验证请求 传入的参数为request--vCode 8之后不再更新,不推荐使用
 	 * 
-	 * @time 2014年7月10日 下午6:34:55
 	 * @param request
 	 * @return
 	 */
@@ -456,7 +413,6 @@ public class GeetestLib {
 	 * @param validate
 	 * @param seccode
 	 * @return
-	 * @time 2014122_171529 by zheng
 	 */
 	private boolean validate(String challenge, String validate, String seccode) {
 		String host = baseUrl;
@@ -485,12 +441,9 @@ public class GeetestLib {
 	/**
 	 * Print out log message Use to Debug
 	 * 
-	 * @time 2014122_151829 by zheng
-	 * 
-	 * @param message
 	 */
 	public void gtlog(String message) {
-		System.out.println("gtlog: " + message);
+		LOG.info("gtlog: " + message);
 	}
 
 	private boolean checkResultByPrivate(String origin, String validate) {
@@ -501,7 +454,6 @@ public class GeetestLib {
 	private String postValidate(String host, String path, String data, int port)
 			throws Exception {
 		String response = "error";
-		// data=fixEncoding(data);
 		InetAddress addr = InetAddress.getByName(host);
 		Socket socket = new Socket(addr, port);
 		BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(
@@ -519,7 +471,7 @@ public class GeetestLib {
 				socket.getInputStream(), "UTF-8"));
 		String line;
 		while ((line = rd.readLine()) != null) {
-			System.out.println(line);
+			LOG.info(line);
 			response = line;
 		}
 		wr.close();
@@ -531,7 +483,6 @@ public class GeetestLib {
 	/**
 	 * 转为UTF8编码
 	 * 
-	 * @time 2014年7月10日 下午3:29:45
 	 * @param str
 	 * @return
 	 * @throws UnsupportedEncodingException
@@ -544,7 +495,6 @@ public class GeetestLib {
 	/**
 	 * md5 加密
 	 * 
-	 * @time 2014年7月10日 下午3:30:01
 	 * @param plainText
 	 * @return
 	 */

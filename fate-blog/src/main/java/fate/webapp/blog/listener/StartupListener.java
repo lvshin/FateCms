@@ -12,6 +12,7 @@ import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -56,6 +57,8 @@ import fate.webapp.blog.utils.FriendLinkUtil;
 @Service
 public class StartupListener implements ApplicationListener<ContextRefreshedEvent> {
 
+    private static final Logger LOG = Logger.getLogger(StartupListener.class);
+    
 	@Autowired
 	private ForumService forumService;
 	
@@ -362,7 +365,7 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("--->Create sitemap...");
+                LOG.info("--->Create sitemap...");
                 //创建网站地图
                 try {
                 	Resource r = new ClassPathResource("log4j.properties");  
@@ -370,7 +373,6 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 					File f = r.getFile().getParentFile().getParentFile()  
 					        .getParentFile();
 					File file = new File(f.getAbsolutePath() + File.separator + "sitemap.xml");
-	                System.out.println(file.getAbsolutePath());
 	                if(!file.exists()){
 	        			file.createNewFile();
 	        		}
@@ -382,7 +384,7 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}  
-                System.out.println("--->Success create sitemap...");
+                LOG.info("--->Success create sitemap...");
             }
         }, 1000, 1800000);//每30分钟生成一次网站地图
     }

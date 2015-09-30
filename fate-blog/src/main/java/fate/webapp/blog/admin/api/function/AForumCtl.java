@@ -227,7 +227,6 @@ public class AForumCtl {
 	@ResponseBody
 	public Object addForum(String result){
 		Map<String, Object> map = new HashMap<String, Object>();
-		System.out.println(result);
 		try {
 			JSONArray array = new JSONArray(result);
 			for(int i=0;i<array.length();i++){

@@ -47,7 +47,7 @@ import fate.webapp.blog.utils.TokenUtil;
 @RequestMapping("/op/login")
 public class LoginCtl {
 	
-	private Logger log = Logger.getLogger(LoginCtl.class);
+	private static final Logger LOG = Logger.getLogger(LoginCtl.class);
 
 	@Autowired
 	private TPAService tpaService;
@@ -117,7 +117,6 @@ public class LoginCtl {
     		String gtResult = "fail";
     		if (geetest.resquestIsLegal(request)) {
     			gtResult = geetest.enhencedValidateRequest(request);
-    			System.out.println(gtResult);
     		} 
     		switch (gtResult) {
     		case "success":break;
@@ -206,7 +205,7 @@ public class LoginCtl {
 	@RequestMapping("/QQLogin")
 	public void QQLogin(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			log.info("IP:"+ClientInfo.getIp(request)+" \""+request.getHeader("User-Agent")+"\" 使用了QQ登录");
+			LOG.info("IP:"+ClientInfo.getIp(request)+" \""+request.getHeader("User-Agent")+"\" 使用了QQ登录");
 			ThirdPartyAccess qq = thirdPartyAccessService
 					.findByType(ThirdPartyAccess.TYPE_QQ);
 			GlobalSetting globalSetting = (GlobalSetting) request.getSession()
@@ -216,11 +215,10 @@ public class LoginCtl {
 							+ globalSetting.getAppUrl() + "/op/login/QQLogin");
 			String accessToken = null, openID = null;
 			long tokenExpireIn = 0L;
-			System.out.println("getin");
 			if (accessTokenObj.getAccessToken().equals("")) {
 				// 我们的网站被CSRF攻击了或者用户取消了授权
 				// 做一些数据统计工作
-				System.out.print("没有获取到响应参数");
+				LOG.info("没有获取到响应参数");
 			} else {
 				accessToken = accessTokenObj.getAccessToken();
 				tokenExpireIn = accessTokenObj.getExpireIn();
@@ -311,7 +309,7 @@ public class LoginCtl {
 	@RequestMapping("/weiboLogin")
 	public void weiboLogin(HttpServletRequest request,
 			HttpServletResponse response, String code) {
-		log.info("IP:"+ClientInfo.getIp(request)+" \""+request.getHeader("User-Agent")+"\" 使用了新浪微博登录");
+	    LOG.info("IP:"+ClientInfo.getIp(request)+" \""+request.getHeader("User-Agent")+"\" 使用了新浪微博登录");
 		try {
 			ThirdPartyAccess xinlang = thirdPartyAccessService
 					.findByType(ThirdPartyAccess.TYPE_XINLANG);
@@ -324,11 +322,10 @@ public class LoginCtl {
 									+ globalSetting.getAppUrl()
 									+ "/op/login/weiboLogin");
 			String accessToken = null, uid = null, tokenExpireIn = null;
-			System.out.println("getin");
 			if (accessTokenObj.getAccessToken().equals("")) {
 				// 我们的网站被CSRF攻击了或者用户取消了授权
 				// 做一些数据统计工作
-				System.out.print("没有获取到响应参数");
+			    LOG.info("没有获取到响应参数");
 			} else {
 				accessToken = accessTokenObj.getAccessToken();
 				tokenExpireIn = accessTokenObj.getExpireIn();
@@ -340,7 +337,6 @@ public class LoginCtl {
 				Account am = new Account(accessToken);
 				JSONObject uidObj = am.getUid();
 				uid = uidObj.getString("uid");
-				System.out.println(uid);
 				request.getSession().setAttribute("openId", uid);
 				request.getSession().setAttribute("loginType",
 						UserSession.TYPE_XINLANG);
@@ -386,75 +382,6 @@ public class LoginCtl {
 		}
 	}
 
-//	@RequestMapping("/goTPADealing")
-//	public String goDealing(String expires_in, String access_token) {
-//		System.out.println("login:" + expires_in + "," + access_token);
-//		return "login/dealing";
-//	}
-//
-//	@RequestMapping("/TPADealing")
-//	public String dealing(String openId, String accessToken, int loginType,
-//			String nickName, String headIconSmall, String headIconMid,
-//			String headIconBig, HttpSession session)
-//			throws UnsupportedEncodingException {
-//		ThirdPartyAccount tpa = tpaService.findByOpenId(openId);
-//		// 授权出错的情况
-//		if (tpa != null && !tpa.getAccessToken().equals(accessToken))
-//			return "";
-//		session.setAttribute("openId", openId);
-//		session.setAttribute("loginType", loginType);
-//
-//		if (tpa == null) {
-//			tpa = new ThirdPartyAccount();
-//			tpa.setOpenId(openId);
-//			tpa.setAccountType(loginType);
-//			tpa.setAccessToken(accessToken);
-//
-//			User user = new User();
-//			user.setNickName(nickName);
-//			user.setActivateDate(new Date());
-//			user.setHeadIconSmall(headIconSmall);
-//			user.setHeadIconMid(headIconMid);
-//			user.setHeadIconBig(headIconBig);
-//			user = userService.update(user);
-//			tpa.setUser(user);
-//			tpa = tpaService.update(tpa);
-//		}
-//		return "redirect:callback";
-//	}
-//
-//	/**
-//	 * 新浪微博登录，获取code
-//	 * 
-//	 * @param code
-//	 * @param state
-//	 * @return
-//	 */
-//	@RequestMapping("/xinlangCode")
-//	public String xinlangCode(String code, String state) {
-//		Map<String, Object> map = new HashMap<String, Object>();
-//		map.put("code", code);
-//		map.put("state", state);
-//		return "redirect:goXinlangLogin?code=" + code + "&state=" + state;
-//	}
-//
-//	/**
-//	 * 新浪微博登录，跳转到获取access_token的页面
-//	 * 
-//	 * @param code
-//	 * @param state
-//	 * @return
-//	 */
-//	@RequestMapping("/goXinlangLogin")
-//	public ModelAndView goXinlangLogin(String code, String state) {
-//		ModelAndView mv = new ModelAndView("login/xinlangLogin");
-//		ThirdPartyAccess xinlang = thirdPartyAccessService
-//				.findByType(ThirdPartyAccess.TYPE_XINLANG);
-//		mv.addObject("xinlang", xinlang);
-//		mv.addObject("code", code);
-//		mv.addObject("state", state);
-//		return mv;
-//	}
 
 	/**
 	 * 第三方帐号登录成功后的回调函数

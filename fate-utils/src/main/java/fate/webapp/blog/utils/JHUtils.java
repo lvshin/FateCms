@@ -50,7 +50,6 @@ public class JHUtils {
 			JSONObject dataJson = sendToJH("http://v.juhe.cn/sms/send", data);
 			int error_code = dataJson.getInt("error_code");
 			String reason = dataJson.getString("reason");
-			System.out.println(reason);
 			map.put("success", error_code==0);
 			map.put("msg", reason);
 		} catch (JSONException e) {
@@ -120,8 +119,6 @@ public class JHUtils {
 			client.executeMethod(method);
 
 			String SubmitResult = method.getResponseBodyAsString();
-
-			System.out.println(SubmitResult);
 
 			JSONObject dataJson = new JSONObject(SubmitResult);
 			

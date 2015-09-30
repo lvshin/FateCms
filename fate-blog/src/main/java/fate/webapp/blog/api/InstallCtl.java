@@ -84,8 +84,6 @@ public class InstallCtl {
             String jspPath = path + "WEB-INF/jsp/install.jsp";
             String classPath = path + "WEB-INF/classes/fate/webapp/blog/api/installCtl.class";
             File jspFile = new File(jspPath);
-            System.out.println(jspPath);
-            System.out.println(jspFile.exists());
             if(jspFile.exists()){
                 jspFile.delete();
             }

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,6 +20,8 @@ import fate.webapp.blog.utils.ClientInfo;
 
 public class SpiderInterceptor implements HandlerInterceptor {
 
+    private static final Logger LOG = Logger.getLogger(SpiderInterceptor.class);
+    
 	@Autowired
 	private SpiderService spiderService;
 	
@@ -174,7 +177,7 @@ public class SpiderInterceptor implements HandlerInterceptor {
 //			System.out.println(request.getHeader("User-Agent"));
 		}
 		if(e!=null)
-			System.out.println(e.getMessage());
+		    LOG.info(e.getMessage());
 		String agent = request.getHeader("User-Agent");
 		//判断是不是404，是则做记录
 		switch (response.getStatus()) {

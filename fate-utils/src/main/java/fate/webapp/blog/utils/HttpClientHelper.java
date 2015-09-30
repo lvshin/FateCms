@@ -74,7 +74,6 @@ public class HttpClientHelper {
 		InputStream in = null;
 		try {
 			URL url = new URL(urlToRequest);
-			System.out.println("Reuqest URL:::" + urlToRequest);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			OutputStream out;
 

@@ -53,7 +53,6 @@ public class ECSServiceImpl implements ECSService {
         IAcsClient client = new DefaultAcsClient(profile);
         try {
             DescribeInstanceMonitorDataResponse monitorDataResponse = client.getAcsResponse(request);
-            System.out.println(monitorDataResponse.getRequestId());
             return monitorDataResponse.getMonitorData();
         }catch (ClientException e) {
                 e.printStackTrace();

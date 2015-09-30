@@ -60,7 +60,6 @@ public class StatisticsCtl {
             }
         }
         map.put("xAxis", xAxisList);
-        long start = System.currentTimeMillis();
         List<Map<String, Object>> series = new ArrayList<Map<String, Object>>();
         for (Forum forum : forums) {
             Map<String, Object> m = new HashMap<String, Object>();
@@ -81,8 +80,6 @@ public class StatisticsCtl {
             m.put("data", seriesList);
             series.add(m);
         }
-        long end = System.currentTimeMillis();
-        System.out.println(end-start);
         map.put("legend", legendList);
         map.put("series", series);
 

@@ -32,7 +32,7 @@ import fate.webapp.blog.utils.FilterHTMLTag;
 @RequestMapping("/")
 public class IndexCtl {
 
-	private static final Logger log = Logger.getLogger(IndexCtl.class);
+	private static final Logger LOG = Logger.getLogger(IndexCtl.class);
 	
 	@Autowired
 	private ThemeService themeService;
@@ -49,7 +49,7 @@ public class IndexCtl {
 	@RequestMapping("/")
 	public ModelAndView index(@RequestParam(defaultValue = "1")int curPage, HttpServletRequest request, HttpSession session){
 		ModelAndView mv = new ModelAndView("index");
-		log.info("IP："+ClientInfo.getIp(request)+" \""+request.getHeader("User-Agent")+"\" 进入了网站首页");
+		LOG.info("IP："+ClientInfo.getIp(request)+" \""+request.getHeader("User-Agent")+"\" 进入了网站首页");
 		Index index = Index.getInstance();
 		if(index.getTitle()==null){
 			//原本论坛首页的
@@ -61,7 +61,7 @@ public class IndexCtl {
 			if(forums.size()>2)
 			    list.add(forumToJson(forums.get(2)));
 			index.setList(list);
-			System.out.println("查询SEO");
+			LOG.info("查询SEO");
 			Param title = paramService.findByKey(Constants.SEO_INDEX_TITLE);
 			Param keywords = paramService.findByKey(Constants.SEO_INDEX_KEYWORDS);
 			Param description = paramService.findByKey(Constants.SEO_INDEX_DESCRIPTION);
@@ -72,7 +72,7 @@ public class IndexCtl {
 		}
 		Map<Integer,List<Theme>> list = index.getThemes();
 		if(list.get(curPage)==null){
-			System.out.println("查询文章列表");
+		    LOG.info("查询文章列表");
 			List<Theme> themes = themeService.pageByFid(0, Constants.INDEX_LIST_LENGTH, curPage, false, true, false, Theme.STATE_PUBLISH);
 			
 			for(Theme theme:themes){
@@ -83,7 +83,7 @@ public class IndexCtl {
 			list.put(curPage, themes);
 		}
 		if(index.getCount()==0){
-			System.out.println("文章总数");
+		    LOG.info("查询文章总数");
 			index.setCount(themeService.count(0, false, Theme.STATE_PUBLISH));
 		}
 		if(index.getFriendLinks().size()==0){

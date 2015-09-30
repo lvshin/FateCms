@@ -76,7 +76,7 @@ import fate.webapp.blog.websocket.SystemMessageWebSocketHandler;
 @RequestMapping("/profile")
 public class ProfileCtl {
 
-	private static final Logger log = Logger.getLogger(ProfileCtl.class);
+	private static final Logger LOG = Logger.getLogger(ProfileCtl.class);
 
 	@Autowired
 	private UserService userService;
@@ -139,7 +139,7 @@ public class ProfileCtl {
 			map.put("success", true);
 			map.put("message", "保存成功");
 		} catch (Exception e) {
-			log.error("更新个人信息失败，用户ID："+user.getUid());
+			LOG.error("更新个人信息失败，用户ID："+user.getUid());
 			map.put("success", false);
 			map.put("message", "未知错误");
 		}
@@ -157,7 +157,7 @@ public class ProfileCtl {
 	@ResponseBody
 	public Object uploadImg(@RequestParam("img") MultipartFile uploadFile,
 			HttpServletRequest request) {
-		log.info("头像上传");
+		LOG.info("头像上传");
 		String dir = "headIcon";
 		Map<String, Object> map = new HashMap<String, Object>();
 		String filename = uploadFile.getOriginalFilename();// 获取文件名
@@ -199,7 +199,7 @@ public class ProfileCtl {
 				map.put("height", bi.getHeight());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				log.error("头像文件写入失败");
+				LOG.error("头像文件写入失败");
 				map.put("status", "error");
 				map.put("message", "系统内部错误");
 			}
@@ -246,7 +246,7 @@ public class ProfileCtl {
 			e.printStackTrace();
 			map.put("status", "error");
 			map.put("message", "文件切割异常");
-			log.error("文件切割异常:", e);
+			LOG.error("文件切割异常:", e);
 		}
 		return map;
 	}
@@ -256,7 +256,6 @@ public class ProfileCtl {
 			@PathVariable("filename") String filename,
 			@PathVariable("type") String type, HttpServletRequest request,
 			HttpServletResponse response) {
-		System.out.println(filename);
 		filename = filename + "." + type;
 		ServletContext context = request.getServletContext();
 		String relpath = context.getRealPath("/").substring(0,
@@ -351,7 +350,7 @@ public class ProfileCtl {
 			userService.update(user);
 			map.put("success", true);
 		} catch (Exception e) {
-		    log.error("更新头像失败", e);
+		    LOG.error("更新头像失败", e);
 			map.put("success", false);
 			map.put("message", "未知错误");
 		}
@@ -405,7 +404,7 @@ public class ProfileCtl {
 			}
 			map.put("success", true);
 		} catch (Exception e) {
-			log.error("手机验证失败", e);
+			LOG.error("手机验证失败", e);
 			map.put("success", false);
 			map.put("message", "未知错误");
 		}
@@ -429,7 +428,7 @@ public class ProfileCtl {
 			sendEmail(email, userSession.getUser());
 			map.put("success", true);
 		} catch (Exception e) {
-			log.error("邮件发送失败", e);
+			LOG.error("邮件发送失败", e);
 			map.put("success", false);
 			map.put("message", "未知错误");
 		}
@@ -561,11 +560,10 @@ public class ProfileCtl {
 							+ globalSetting.getAppUrl() + "/op/login/QQLogin");
 			String accessToken = null, openID = null;
 			long tokenExpireIn = 0L;
-			System.out.println("getin");
 			if (accessTokenObj.getAccessToken().equals("")) {
 				// 我们的网站被CSRF攻击了或者用户取消了授权
 				// 做一些数据统计工作
-				System.out.print("没有获取到响应参数");
+			    LOG.info("没有获取到响应参数");
 			} else {
 				accessToken = accessTokenObj.getAccessToken();
 				tokenExpireIn = accessTokenObj.getExpireIn();
@@ -682,11 +680,10 @@ public class ProfileCtl {
 									+ globalSetting.getAppUrl()
 									+ "/profile/bindWeibo");
 			String accessToken = null, uid = null, tokenExpireIn = null;
-			System.out.println("getin");
 			if (accessTokenObj.getAccessToken().equals("")) {
 				// 我们的网站被CSRF攻击了或者用户取消了授权
 				// 做一些数据统计工作
-				System.out.print("没有获取到响应参数");
+			    LOG.info("没有获取到响应参数");
 			} else {
 				accessToken = accessTokenObj.getAccessToken();
 				tokenExpireIn = accessTokenObj.getExpireIn();

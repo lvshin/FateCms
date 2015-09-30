@@ -43,12 +43,10 @@ public class SiteStatistics {
 	}
 
 	public static void raise() {
-		System.out.println("session+1");
 		online++;
 	}
 
 	public static void reduce() {
-		System.out.println("session-1");
 		online--;
 	}
 
