@@ -66,8 +66,9 @@ public class SecurityVerificationCtl {
 					.setVerificationType(SecurityVerification.VERIFICATION_TYPE_MOBILE);
 			securityVerification.setVerificationTime(new Date());
 			securityVerificationService.update(securityVerification);
+			GlobalSetting globalSetting = GlobalSetting.getInstance();
 			map.put("success", true);
-			map.put("res", JHUtils.sendSms(mobile, code, Constants.MOBILE_TIMEOUT, 0));
+			map.put("res", JHUtils.sendSms(mobile, code, Constants.MOBILE_TIMEOUT, 0, globalSetting.getSmsKey()));
 		} catch (Exception e) {
 			LOG.error("短信发送失败", e);
 			map.put("success", false);

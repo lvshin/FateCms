@@ -1,6 +1,5 @@
 package fate.webapp.blog.base;
 
-import java.text.SimpleDateFormat;
 
 public class Constants {
 
@@ -146,6 +145,8 @@ public class Constants {
     public static final String LOG_ID = "log_id";
     
     public static final String REDIS_OPEN = "redis_open";
+    
+    public static final String SMS_KEY = "sms_key";
     
     /**
      * 谷歌ping地址

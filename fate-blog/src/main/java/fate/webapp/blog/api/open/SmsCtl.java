@@ -68,7 +68,7 @@ public class SmsCtl {
 		securityVerification.setVerificationType(SecurityVerification.VERIFICATION_TYPE_MOBILE);
 		securityVerificationService.save(securityVerification);
 		session.setAttribute("security", securityVerification.getGuid());
-		return JHUtils.sendSms(mobile, smsCode, Constants.MOBILE_TIMEOUT, 0);
+		return JHUtils.sendSms(mobile, smsCode, Constants.MOBILE_TIMEOUT, 0, globalSetting.getSmsKey());
 	}
 	
 	

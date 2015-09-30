@@ -633,4 +633,28 @@ public class SiteSetCtl {
         return map;
     }
     
+    @RequestMapping("/sms")
+    public ModelAndView sms(){
+        ModelAndView mv = new ModelAndView("admin/siteSet/sms");
+        return mv;
+    }
+    
+    @RequestMapping("/updateSms")
+    @ResponseBody
+    public Object updateSms(String smsKey){
+        Map<String, Object> map = new HashMap<String, Object>();
+        try{
+            GlobalSetting globalSetting = GlobalSetting.getInstance();
+            globalSetting.setSmsKey(smsKey);
+            updateParam(Constants.SMS_KEY, smsKey, Param.TYPE_TEXT);
+            map.put("success", true);
+            map.put("msg", Constants.UPDATE_SET_SUCCESS);
+        } catch (Exception e) {
+            LOG.error(Constants.UPDATE_SET_FAIL, e);
+            map.put("success", false);
+            map.put("msg", Constants.UPDATE_SET_FAIL);
+        }
+        return map;
+    }
+    
 }

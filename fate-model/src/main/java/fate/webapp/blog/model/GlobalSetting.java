@@ -91,6 +91,8 @@ public class GlobalSetting {
 	
 	private boolean redisOpen;//是否开启redis
 	
+	private String smsKey;//聚合短信服务的key
+	
 	private static final GlobalSetting globalSetting = new GlobalSetting();
 	
 	private GlobalSetting() {
@@ -281,6 +283,14 @@ public class GlobalSetting {
 
     public void setRedisOpen(boolean redisOpen) {
         this.redisOpen = redisOpen;
+    }
+
+    public String getSmsKey() {
+        return smsKey;
+    }
+
+    public void setSmsKey(String smsKey) {
+        this.smsKey = smsKey;
     }
 	
 }

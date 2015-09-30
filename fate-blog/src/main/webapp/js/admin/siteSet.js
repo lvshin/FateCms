@@ -188,6 +188,30 @@ function duoshuoSubmit() {
 	$("#duoshuoForm").ajaxSubmit(options);
 }
 
+//短信服务配置更新
+function smsSubmit() {
+	var options = {
+		url : "admin/siteSet/updateSms",
+		type : 'post',
+		dataType : 'json',
+		success : function(data) {
+			if (data.success) {
+				toastr.success(data.msg);
+				setTimeout(function() {
+					location.reload();
+				}, 1000);
+			} else {
+				toastr.error(data.msg);
+			}
+		},
+		error : function() {
+			toastr.error("通信错误");
+		}
+
+	};
+	$("#smsForm").ajaxSubmit(options);
+}
+
 //多说评论配置更新
 function baiduShareSubmit() {
 	var options = {

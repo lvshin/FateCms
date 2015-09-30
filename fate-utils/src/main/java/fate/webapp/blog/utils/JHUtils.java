@@ -36,8 +36,7 @@ public class JHUtils {
 	 *            短信模版id
 	 * @return 错误码
 	 */
-	public static Map<String, Object> sendSms(String mobile, String code, int timeout,
-			int templeteId) {
+	public static Map<String, Object> sendSms(String mobile, String code, int timeout, int templeteId, String key) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			NameValuePair[] data = {
@@ -45,7 +44,7 @@ public class JHUtils {
 					new NameValuePair("tpl_id", "2556"),
 					new NameValuePair("tpl_value", "#code#=" + code + "&#hour#="
 							+ timeout),
-					new NameValuePair("key", "03abf4264d5bc4b5bf7f927857b85b2f") };
+					new NameValuePair("key", key) };
 			
 			JSONObject dataJson = sendToJH("http://v.juhe.cn/sms/send", data);
 			int error_code = dataJson.getInt("error_code");
