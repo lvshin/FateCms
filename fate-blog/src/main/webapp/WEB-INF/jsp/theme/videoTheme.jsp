@@ -99,28 +99,6 @@
 									href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a
 									href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
 							</div>
-							<script>
-								window._bd_share_config = {
-									"common" : {
-										"bdSnsKey" : {
-											"tsina" : "1049226049",
-											"tqq" : "801565736"
-										},
-										"bdText" : "",
-										"bdMini" : "2",
-										"bdMiniList" : false,
-										"bdPic" : "",
-										"bdStyle" : "1",
-										"bdSize" : "16"
-									},
-									"share" : {},
-									"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"分享到：","viewSize":"16"}
-								};
-								with (document)
-									0[(getElementsByTagName('head')[0] || body)
-											.appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='
-											+ ~(-new Date() / 36e5)];
-							</script>
 						</div>
 					</div>
 					<div class="row">
@@ -138,60 +116,12 @@
 							</div>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<script type="text/javascript">
-								var cpro_id = "u2194845";
-								(window["cproStyleApi"] = window["cproStyleApi"]
-										|| {})[cpro_id] = {
-									at : "3",
-									rsi0 : "700",
-									rsi1 : "250",
-									pat : "6",
-									tn : "baiduCustNativeAD",
-									rss1 : "#FFFFFF",
-									conBW : "0",
-									adp : "1",
-									ptt : "0",
-									titFF : "%E5%BE%AE%E8%BD%AF%E9%9B%85%E9%BB%91",
-									titFS : "14",
-									rss2 : "#000000",
-									titSU : "0",
-									ptbg : "90",
-									piw : "130",
-									pih : "80",
-									ptp : "1"
-								}
-							</script>
-							<script src="http://cpro.baidustatic.com/cpro/ui/c.js"
-								type="text/javascript"></script>
-						</div>
-					</div>
 				</div>
 				<div class="comment">
 					<!-- 多说评论框 start -->
 					<div class="ds-thread" data-thread-key="${theme.guid}"
 						data-title="${theme.title}" data-url="${theme.url}"></div>
 					<!-- 多说评论框 end -->
-					<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-					<script type="text/javascript">
-						var duoshuoQuery = {
-							short_name : "reinforce"
-						};
-						(function() {
-							var ds = document.createElement('script');
-							ds.type = 'text/javascript';
-							ds.async = true;
-							ds.src = (document.location.protocol == 'https:' ? 'https:'
-									: 'http:')
-									+ '//static.duoshuo.com/embed.js';
-							ds.charset = 'UTF-8';
-							(document.getElementsByTagName('head')[0] || document
-									.getElementsByTagName('body')[0])
-									.appendChild(ds);
-						})();
-					</script>
-					<!-- 多说公共JS代码 end -->
 
 				</div>
 				

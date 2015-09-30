@@ -27,7 +27,7 @@
 	<div class="container-fluid">
 	<div class="reinforce-main">
 		<c:import url="navi.jsp">
-			<c:param name="index" value="4" />
+			<c:param name="index" value="3" />
 		</c:import>
 		<div class="reinforce-content">
 			<div class="site">

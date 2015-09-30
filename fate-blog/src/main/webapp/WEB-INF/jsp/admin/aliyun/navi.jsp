@@ -4,7 +4,7 @@
 	<!-- List group -->
 	<ul class="reinforce-menu">
 		<li><a href="admin/aliyun/set" class="list-title" rel="nofollow"><i class="fa fa-cog"></i>&nbsp;&nbsp;基础设置</a></li>
-		<li><a href="admin/aliyun/ecs/index" class="list-title" rel="nofollow"><i class="ali-icon icon-ecs"></i>&nbsp;&nbsp;ECS监控</a></li>
+		<!--<li><a href="admin/aliyun/ecs/index" class="list-title" rel="nofollow"><i class="ali-icon icon-ecs"></i>&nbsp;&nbsp;ECS监控</a></li>-->
 		<li>
 			<a href="javascript:;" class="list-title" rel="nofollow"><i class="ali-icon icon-oss-small"></i>&nbsp;&nbsp;OSS</a>
 			<ul>
