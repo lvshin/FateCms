@@ -73,12 +73,17 @@ public class LoginCtl {
 			HttpServletResponse response, String redirect_to)
 			throws IOException {
 		String callback = "";
-		if (redirect_to == null || redirect_to.trim().equals(""))
-			callback = request.getHeader("REFERER");
-		else
-			callback = redirect_to;
-		if (request.getSession().getAttribute("callback") == null)
-			request.getSession().setAttribute("callback", callback);
+		if (redirect_to == null || redirect_to.trim().equals("")){
+		    callback = request.getHeader("REFERER");
+		}
+		else{
+		    callback = redirect_to;
+		}
+			
+		if (request.getSession().getAttribute("callback") == null){
+		    request.getSession().setAttribute("callback", callback);
+		}
+			
 		UserSession userSession = (UserSession) request.getSession()
 				.getAttribute("userSession");
 		if (userSession != null) {
@@ -146,8 +151,9 @@ public class LoginCtl {
 				callback = request.getHeader("REFERER");
 			}
 			session.removeAttribute("callback");
-			if (callback == null || callback.contains("/op/login"))
+			if (callback == null || callback.contains("/op/login")){
 				callback = "/";
+			}
 			map.put("callback", callback);
 			map.put("success", true);
 
@@ -196,9 +202,9 @@ public class LoginCtl {
 					qq.getAccessKey(), "http://" + globalSetting.getAppUrl()
 							+ "/op/login/QQLogin"));
 		} catch (QQConnectException e) {
-			e.printStackTrace();
+			LOG.error("连接到QQ失败", e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error("重定向失败", e);
 		}
 	}
 
@@ -274,11 +280,9 @@ public class LoginCtl {
 				response.sendRedirect("callback");
 			}
 		} catch (QQConnectException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    LOG.error("连接到QQ失败", e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    LOG.error("重定向会本站失败", e);
 		}
 	}
 
@@ -299,10 +303,9 @@ public class LoginCtl {
 					"http://" + globalSetting.getAppUrl()
 							+ "/op/login/weiboLogin"));
 		} catch (IOException e) {
-			e.printStackTrace();
+		    LOG.error("连接到新浪失败", e);
 		} catch (WeiboException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    LOG.error("重定向失败", e);
 		}
 	}
 
@@ -371,14 +374,11 @@ public class LoginCtl {
 				response.sendRedirect("callback");
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    LOG.error("重定向回本站失败", e);
 		} catch (WeiboException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    LOG.error("连接到新浪失败", e);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    LOG.error("JSON解析错误", e);
 		}
 	}
 

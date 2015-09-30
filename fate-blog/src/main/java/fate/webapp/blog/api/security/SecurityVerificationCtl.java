@@ -11,8 +11,6 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +27,6 @@ import fate.webapp.blog.service.UserService;
 import fate.webapp.blog.service.UserSessionService;
 import fate.webapp.blog.utils.Base64;
 import fate.webapp.blog.utils.JHUtils;
-import fate.webapp.blog.utils.SmsAgent;
 import fate.webapp.blog.utils.TokenUtil;
 
 @Controller

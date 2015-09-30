@@ -82,9 +82,6 @@ public class ProfileCtl {
 	private UserService userService;
 
 	@Autowired
-	private SystemMessageService systemMessageService;
-
-	@Autowired
 	private TPAService tpaService;
 
 	@Autowired
@@ -125,10 +122,11 @@ public class ProfileCtl {
 			if (headIcon != 0) {
 				ThirdPartyAccount tpa = tpaService.findByUidAndType(
 						user.getUid(), headIcon);
-				if (tpa != null)
+				if (tpa != null){
 					user.setHeadIconBig(tpa.getHeadIconBig());
-				else
+				}else{
 					user.setHeadIconBig(null);
+				}
 			} else {
 				user.setHeadIconBig(user.getHeadIconLocal());
 			}
