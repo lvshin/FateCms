@@ -63,14 +63,12 @@ import fate.webapp.blog.model.UserSession;
 import fate.webapp.blog.service.OSSService;
 import fate.webapp.blog.service.ParamService;
 import fate.webapp.blog.service.SecurityVerificationService;
-import fate.webapp.blog.service.SystemMessageService;
 import fate.webapp.blog.service.TPAService;
 import fate.webapp.blog.service.ThirdPartyAccessService;
 import fate.webapp.blog.service.UserService;
 import fate.webapp.blog.utils.Base64;
 import fate.webapp.blog.utils.ImageUtils;
 import fate.webapp.blog.utils.TokenUtil;
-import fate.webapp.blog.websocket.SystemMessageWebSocketHandler;
 
 @Controller
 @RequestMapping("/profile")
@@ -761,11 +759,6 @@ public class ProfileCtl {
 		dateFormat.setLenient(false);
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(
 				dateFormat, true));
-	}
-
-	@Bean
-	public SystemMessageWebSocketHandler systemMessageWebSocketHandler() {
-		return new SystemMessageWebSocketHandler();
 	}
 
 }
