@@ -166,7 +166,7 @@ public class Theme implements Serializable{
 	
 	@OneToMany(mappedBy = "theme",fetch = FetchType.EAGER)
 	@OrderBy(value = "post_id desc")
-	@Where(clause = "status != 'delete'")
+	@Where(clause = "status = 'approved'")
 	private List<DuoShuo> duoShuos;//文章下的多说评论
 	
 	@OneToOne(fetch=FetchType.EAGER)
