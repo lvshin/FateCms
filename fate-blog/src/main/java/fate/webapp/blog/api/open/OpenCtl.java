@@ -307,7 +307,7 @@ public class OpenCtl {
 		Param duoshuoKey = paramService.findByKey(Constants.DUOSHUO_KEY);
         Param duoshuoSecret = paramService.findByKey(Constants.DUOSHUO_SECRET);
 		
-		GetMethod method = new GetMethod("http://api.duoshuo.com/LOG/list.json?short_name="+duoshuoKey.getTextValue()+"&secret="+duoshuoSecret.getTextValue()+"&since_id="+sinceId);
+		GetMethod method = new GetMethod("http://api.duoshuo.com/log/list.json?short_name="+duoshuoKey.getTextValue()+"&secret="+duoshuoSecret.getTextValue()+"&since_id="+sinceId);
 		client.getParams().setContentCharset("UTF-8");
 		method.setRequestHeader("ContentType", "application/x-www-form-urlencoded;charset=UTF-8");
 		Index index = Index.getInstance();
