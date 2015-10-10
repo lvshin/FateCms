@@ -85,7 +85,7 @@ public class AAnnouncementCtl {
 				announcementService.save(announcement);
 			}
 			Index index = Index.getInstance();
-			index.setAnnouncement(announcementService.findLast());
+			index.setAnnouncements(announcementService.findLast(3));
 			map.put("success", true);
 			map.put("msg", "保存成功");
 		} catch (Exception e) {
@@ -104,7 +104,7 @@ public class AAnnouncementCtl {
             Announcement announcement = announcementService.find(id);
             announcementService.delete(announcement);
             Index index = Index.getInstance();
-            index.setAnnouncement(announcementService.findLast());
+            index.setAnnouncements(announcementService.findLast(3));
             map.put("success", true);
             map.put("msg", "保存成功");
         } catch (Exception e) {

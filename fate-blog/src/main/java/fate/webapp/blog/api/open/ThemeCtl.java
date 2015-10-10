@@ -218,6 +218,7 @@ public class ThemeCtl {
 				map.put("msg", "您的帐号处于未验证状态，请先验证您的邮箱/手机！");
 				return map;
 			}
+			
 			if(themeGuid!=null){
 				comments.setTheme(themeService.find(themeGuid, globalSetting.getRedisOpen()));
 			}else if(commentGuid!=null){

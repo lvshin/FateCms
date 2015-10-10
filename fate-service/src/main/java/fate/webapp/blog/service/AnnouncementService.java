@@ -21,8 +21,9 @@ public interface AnnouncementService {
 	public long count();
 	
 	/**
-	 * 获取最新的公告
-	 * @return
-	 */
-	public Announcement findLast();
+     * 获取最新的在有效期内的公告
+     * @param num 获取多少条
+     * @return
+     */
+	public List<Announcement> findLast(int num);
 }

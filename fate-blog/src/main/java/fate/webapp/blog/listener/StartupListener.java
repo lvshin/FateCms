@@ -255,7 +255,7 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 	
 	public void initOthers(){
 		Index index = Index.getInstance();
-		index.setAnnouncement(announcementService.findLast());//公告
+		index.setAnnouncements(announcementService.findLast(3));//公告
 		index.setAdvRight(advertisementService.findLastByType(Advertisement.TYPE_RIGHT));//右侧广告
 		index.setAdvBottom(advertisementService.findLastByType(Advertisement.TYPE_BOTTOM));//底部广告
 		Param logId= paramService.findByKey(Constants.LOG_ID);

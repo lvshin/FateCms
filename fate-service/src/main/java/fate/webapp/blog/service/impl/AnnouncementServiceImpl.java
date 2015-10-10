@@ -44,8 +44,8 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 	}
 
 	@Override
-	public Announcement findLast() {
-		return announcementDao.findLast();
+	public List<Announcement> findLast(int num) {
+		return announcementDao.findLast(num);
 	}
 
 	@Override

@@ -160,7 +160,7 @@ public class OpenCtl {
 //		}
 		Index index = Index.getInstance();
 		
-		mv.addObject("announcement", index.getAnnouncement());
+		mv.addObject("announcements", index.getAnnouncements());
 		mv.addObject("advertisement", index.getAdvRight());
 		mv.addObject("online", SiteStatistics.getOnline());
 		mv.addObject("updateTime", SiteStatistics.getUpdateTime());

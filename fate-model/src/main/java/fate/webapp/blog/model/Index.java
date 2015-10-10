@@ -22,7 +22,7 @@ public class Index {
 	private long count;
 	private List<Theme> hot;
 	private List<Theme> searchHot;
-	private Announcement announcement;
+	private List<Announcement> announcements;
 	private Advertisement advRight;
 	private Advertisement advBottom;
 	private List<FriendLink> friendLinks;//友链
@@ -88,13 +88,13 @@ public class Index {
 	public void setSearchHot(List<Theme> searchHot) {
 		this.searchHot = searchHot;
 	}
-	public Announcement getAnnouncement() {
-		return announcement;
-	}
-	public void setAnnouncement(Announcement announcement) {
-		this.announcement = announcement;
-	}
-	public Advertisement getAdvRight() {
+	public List<Announcement> getAnnouncements() {
+        return announcements;
+    }
+    public void setAnnouncements(List<Announcement> announcements) {
+        this.announcements = announcements;
+    }
+    public Advertisement getAdvRight() {
 		return advRight;
 	}
 	public void setAdvRight(Advertisement advRight) {
