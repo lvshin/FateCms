@@ -51,7 +51,7 @@
 				<div class="page">
 					<form id="announcementForm" class="form-horizontal mg-t-10">
 						<div class="form-group">
-							<label for="title" class="col-sm-1 control-label">标题</label>
+							<label for="title" class="col-sm-1 control-label"><span class="red">*</span>标题</label>
 							<div class="col-sm-9">
 								<input type="text" class="form-control" id="title" placeholder="公告标题" name="title" value="${announcement.title}" maxlength="50">
 								<input type="hidden" name="id" value="${announcement==null?0:announcement.id}">
@@ -73,15 +73,15 @@
 							<div class="col-sm-2"></div>
 						</div>
 						<div class="form-group">
-							<label for="displayOrder" class="col-sm-1 control-label">显示顺序</label>
+							<label for="displayOrder" class="col-sm-1 control-label"><span class="red">*</span>显示顺序</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control int-only" id="displayOrder" placeholder="显示顺序" name="displayOrder" value="${announcement.displayOrder}">
+								<input type="text" class="form-control int-only" id="displayOrder" placeholder="显示顺序" name="displayOrder" value="${announcement==null?0:announcement.displayOrder}">
 								<input type="hidden" name="id" value="${announcement==null?0:announcement.id}">
 							</div>
 							<div class="col-sm-2"></div>
 						</div>
 						<div class="form-group">
-							<label for="endTime" class="col-sm-1 control-label">公告内容</label>
+							<label for="endTime" class="col-sm-1 control-label"><span class="red">*</span>公告内容</label>
 							<div class="col-sm-9">
 								<textarea class="form-control" id="content" name="content" rows="8">${announcement.content}</textarea>
 							</div>
@@ -277,7 +277,7 @@
 					}
 				},
 				error : function() {
-					alert("通信错误");
+					dialog.alert("与服务器的通信异常，请稍后再试");
 				}
 
 			};
