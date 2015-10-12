@@ -341,7 +341,7 @@ public class AliyunCtl {
     public ModelAndView filelist(@RequestParam(defaultValue = "") String dir,
             @RequestParam(defaultValue = "") String keyword, HttpServletRequest request)
             throws UnsupportedEncodingException {
-        if (!"".equals(dir) && !"/".endsWith(dir)){
+        if (!"".equals(dir) && !dir.endsWith("/")){
             dir += "/";
         }
         dir = java.net.URLDecoder.decode(dir, "utf-8");
