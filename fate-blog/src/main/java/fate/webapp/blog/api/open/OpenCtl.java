@@ -350,7 +350,9 @@ public class OpenCtl {
 						}
 						duoShuo.setMessage(meta.getString("message"));
 						duoShuo.setStatus(meta.getString("status"));
-						duoShuo.setParentId(Long.parseLong(meta.getString("parent_id")));
+						String parentId = meta.getString("parent_id");
+                        parentId = "null".equals(parentId)?"0":parentId;
+                        duoShuo.setParentId(Long.parseLong(parentId));//parent_id突然出现了一个null
 						duoShuo.setType(meta.getString("type"));
 						duoShuo.setLastModify(new Date().getTime());
 						duoShuo.setLogId(logId);
