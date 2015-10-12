@@ -22,6 +22,8 @@ FateCMS
 
 6.删除ROOT-->WEB-INFO-->classes-->fate-->webapp-->blog-->api中的installCtl.class
 
+7.OpenSearch模版：http://open.reinforce.cn/FateCms_OpenSearch模版.txt
+
 
 **后台主要功能介绍：**
 
