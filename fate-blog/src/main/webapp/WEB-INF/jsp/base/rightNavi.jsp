@@ -1,13 +1,15 @@
 ﻿<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <script>
 	window.onload=function(){
 		$(".panel-title").click(function() {
-			if (!$(this).hasClass("panel-last"))
+			if (!$(this).hasClass("panel-static")){
 				$(this).siblings().slideToggle();
-			$(this).next().addClass("in");
-			$(this).parent().siblings().children(".panel-collapse").slideUp();
+				$(this).next().addClass("in");
+				$(this).parent().siblings().children(".panel-collapse").slideUp();
+			}
 		});
 		//滚轮下翻页面时，如果导航条到达浏览器窗口顶部，则固定导航条
 		var h2 = $('.panel-right:last').offset().top;
@@ -22,23 +24,29 @@
 				});
 	};
 </script>
-
+<c:if test="${fn:length(announcements)>0}">
 <div class="panel panel-default panel-right animated fadeInRight">
 	<!-- Default panel contents -->
-	<div class="panel-heading panel-title">
+	<div class="panel-heading panel-title panel-static">
 		<i class="glyphicon glyphicon-volume-up"></i>&nbsp;&nbsp;${announcement!=null?announcement.title:"公告"}
 	</div>
 	<div class="panel-body">
-		<c:if test="${announcement!=null}">
-  			${announcement.content}
-  		</c:if>
-		<c:if test="${announcement==null}">
-			<span class="gray">暂无公告</span>
-		</c:if>
+		<c:forEach items="${announcements}" var="announcement">
+			<div class="">
+				
+			</div>
+			<c:if test="${announcement!=null}">
+	  			${announcement.content}
+	  		</c:if>
+			<c:if test="${announcement==null}">
+				<span class="gray">暂无公告</span>
+			</c:if>
+		</c:forEach>
+		
 	</div>
 
 </div>
-
+</c:if>
 <div class="panel panel-danger panel-list panel-right animated fadeInRight delay1">
 	<!-- Default panel contents -->
 	<div class="panel-heading panel-title">
@@ -69,7 +77,7 @@
 	</div>
 </div>
  <div class="panel panel-default panel-right animated fadeInRight delay3">
-	<div class="panel-heading panel-title">
+	<div class="panel-heading panel-title panel-static">
 		<i class="glyphicon glyphicon-tags"></i>&nbsp;&nbsp;标签
 	</div>
 	<div class="panel-body">
@@ -94,7 +102,7 @@
 </div>
 <div class="panel panel-default panel-right animated fadeInRight delay3">
 	<!-- Default panel contents -->
-	<div class="panel-heading panel-title panel-last">
+	<div class="panel-heading panel-title panel-static">
 		<i class="glyphicon glyphicon-stats"></i>&nbsp;&nbsp;站点统计
 	</div>
 

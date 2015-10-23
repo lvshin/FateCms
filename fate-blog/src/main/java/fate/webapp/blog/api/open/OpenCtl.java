@@ -296,9 +296,7 @@ public class OpenCtl {
 	public void duoshuo(String action, String signature){
 		/*同步 */
 		Index index = Index.getInstance();
-		if(signature.equals("j6cQY5pEVCVmEnTWW7lywpBtm0I=")){
-			syncFromDuoShuo(Long.parseLong(index.getLogId().getTextValue()));
-		}
+		syncFromDuoShuo(Long.parseLong(index.getLogId().getTextValue()));
 	}
 	
 	public void syncFromDuoShuo(long sinceId){
