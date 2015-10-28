@@ -117,24 +117,6 @@
 					</div>
 					<br>
 					<div class="row">
-						<div class="col-md-5">
-							<div class="input-group">
-								<span class="input-group-addon">血型</span> <select
-									class="form-control" name="blood">
-									<option value="A" ${userSession.user.blood=="A"?"selected":""}>A</option>
-									<option value="B" ${userSession.user.blood=="B"?"selected":""}>B</option>
-									<option value="AB" ${userSession.user.blood=="AB"?"selected":""}>AB</option>
-									<option value="O" ${userSession.user.blood=="O"?"selected":""}>O</option>
-									<option value="other" ${userSession.user.blood=="other"?"selected":""}>其他</option>
-								</select>
-							</div>
-						</div>
-						<div class="col-md-7">
-							<span class="Validform_checktip help"></span>
-						</div>
-					</div>
-					<br>
-					<div class="row">
 					<div class="col-md-12">
 						<div class="form-group">
 							<label for="headicon">头像</label>
