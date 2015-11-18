@@ -1,18 +1,25 @@
 package fate.webapp.blog.api.open;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.http.client.ClientProtocolException;
@@ -293,11 +300,68 @@ public class OpenCtl {
 	}
 	
 	@RequestMapping("/duoshuo")
-	public void duoshuo(String action, String signature){
-		/*同步 */
-		Index index = Index.getInstance();
-		syncFromDuoShuo(Long.parseLong(index.getLogId().getTextValue()));
-	}
+    public void duoshuo(String action, String signature, HttpServletRequest request){
+        /*同步 */
+        Index index = Index.getInstance();
+        GlobalSetting globalSetting = GlobalSetting.getInstance();
+        try {
+            String sign = signature(paramToString(request), globalSetting.getDuoshuoSecret());
+            if(sign.equals(signature)){
+                syncFromDuoShuo(Long.parseLong(index.getLogId().getTextValue()));
+            }
+        } catch (InvalidKeyException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+    }
+    
+    /**
+     * 多说签名
+     * @param stringToSign
+     * @param key
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws UnsupportedEncodingException
+     */
+    public String signature(String stringToSign, String key) throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException{
+        final String ALGORITHM = "HmacSHA1";
+        final String ENCODING = "UTF-8";
+        
+        Mac mac = Mac.getInstance(ALGORITHM);
+        mac.init(new SecretKeySpec(key.getBytes(ENCODING), ALGORITHM));
+        byte[] signData = mac.doFinal(stringToSign.getBytes(ENCODING));
+        
+        return new String(Base64.encodeBase64(signData), ENCODING);
+    }
+    
+    /**
+     * 所有参数转换成一个字符串
+     * @param request
+     * @return
+     */
+    public String paramToString(HttpServletRequest request){
+        StringBuffer sb = new StringBuffer();
+        Enumeration<String> paramNames = request.getParameterNames();  
+        while (paramNames.hasMoreElements()) {
+            String paramName = (String) paramNames.nextElement();  
+            if(!"signature".equals(paramName)){
+                 String[] paramValues = request.getParameterValues(paramName);
+                 for(String s:paramValues){
+                    sb.append(paramName).append("=").append(s).append("&");
+                 }
+            }
+           
+        }
+        return sb.substring(0, sb.length()-1).toString();
+    }
 	
 	public void syncFromDuoShuo(long sinceId){
 		HttpClient client = new HttpClient();
