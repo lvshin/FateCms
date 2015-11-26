@@ -11,7 +11,7 @@
 		<class>fate.webapp.blog.model.Theme</class>
 		<class>fate.webapp.blog.model.ThemeTag</class>
 		<class>fate.webapp.blog.model.Comments</class>
-		<class>fate.webapp.blog.model.FileEntity</class>
+		<!-- <class>fate.webapp.blog.model.FileEntity</class> -->
 		<class>fate.webapp.blog.model.GlobalSetting</class>
 		<class>fate.webapp.blog.model.SecurityVerification</class>
 		<class>fate.webapp.blog.model.ThirdPartyAccess</class>
@@ -27,7 +27,7 @@
 		<class>fate.webapp.blog.model.PingRecord</class>
 		<class>fate.webapp.blog.model.Navi</class>
 		<class>fate.webapp.blog.model.Spider</class>
-		<class>fate.webapp.blog.model.AgentLog</class>
+		<!-- <class>fate.webapp.blog.model.AgentLog</class> -->
 		<class>fate.webapp.blog.model.Advertisement</class>
 		<class>fate.webapp.blog.model.ApiLog</class>
 		<class>fate.webapp.blog.model.FriendLink</class>
