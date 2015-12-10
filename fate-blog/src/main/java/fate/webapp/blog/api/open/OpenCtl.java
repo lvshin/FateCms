@@ -60,6 +60,7 @@ import fate.webapp.blog.service.ThemeTagService;
 import fate.webapp.blog.utils.DateUtil;
 import fate.webapp.blog.utils.FilterHTMLTag;
 import fate.webapp.blog.utils.QRUtil;
+import fate.webapp.blog.utils.Strings;
 
 @Controller
 @RequestMapping("/op")
@@ -414,7 +415,11 @@ public class OpenCtl {
 						duoShuo.setStatus(meta.getString("status"));
 						String parentId = meta.getString("parent_id");
                         parentId = "null".equals(parentId)?"0":parentId;
-                        duoShuo.setParentId(Long.parseLong(parentId));//parent_id突然出现了一个null
+                        if(Strings.isEmpty(parentId)){
+                            duoShuo.setParentId(0);
+                        }else{
+                            duoShuo.setParentId(Long.parseLong(parentId));//parent_id突然出现了一个null
+                        }
 						duoShuo.setType(meta.getString("type"));
 						duoShuo.setLastModify(new Date().getTime());
 						duoShuo.setLogId(logId);
