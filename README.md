@@ -1,4 +1,4 @@
-更名为FateBlog，FateCMS另有他用
+
 
 幻幻博客地址：http://www.reinforce.cn 
 
