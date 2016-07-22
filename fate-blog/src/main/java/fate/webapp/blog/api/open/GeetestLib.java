@@ -1,4 +1,4 @@
-﻿package fate.webapp.blog.api.open;
+package fate.webapp.blog.api.open;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
